@@ -1852,7 +1852,7 @@ def render_current_track(session: DJSession) -> None:
             tone="info",
         )
     else:
-        action_cols = st.columns(3)
+        action_cols = st.columns(4)
         with action_cols[0]:
             if st.button("Play", width="stretch", type="primary"):
                 st.session_state["is_playing"] = True
@@ -1878,8 +1878,19 @@ def render_current_track(session: DJSession) -> None:
         with action_cols[1]:
             if st.button("Pause", width="stretch"):
                 st.session_state["is_playing"] = False
+                st.session_state["last_feedback"] = f"Paused {song.track_name}."
                 st.rerun()
         with action_cols[2]:
+            if st.button("Next", width="stretch", disabled=playback_song is None):
+                st.session_state["is_playing"] = False
+                st.session_state["playback_song"] = None
+                st.session_state["playback_scored"] = False
+                if session._current_song is None and not session_complete(session):
+                    ensure_current_song(session)
+                st.session_state["session_finished"] = session._current_song is None and session_complete(session)
+                st.session_state["last_feedback"] = f"Queued the next recommendation after {song.track_name}."
+                st.rerun()
+        with action_cols[3]:
             if st.button("Skip", width="stretch"):
                 st.session_state["is_playing"] = False
                 if playback_song is not None:
