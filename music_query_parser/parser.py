@@ -4,7 +4,7 @@ import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from .embedder import SemanticEmbedder
+from music_query_parser.embedder import SemanticEmbedder
 
 KNOWN_GENRES = [
     "acoustic",
