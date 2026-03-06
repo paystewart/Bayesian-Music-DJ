@@ -1,7 +1,19 @@
 # Bayesian Music Recommendation Engine
 _Utilizing Bayesian Machine Learning for Dynamic Playlists_
 
-**User Interface:** [Click here to launch](https://your-app-url-here.streamlit.app) 
+## Launch the UI
+
+Run the Streamlit app locally from the project root:
+
+```bash
+streamlit run user_interface.py
+```
+
+If the app reports missing packages, install the project dependencies first:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Project Overview
 Our team built an improved music recommendation engine that moves away from static point-based systems. By framing recommendation as a Bayesian Inference problem, we can treat user preferences and track metadata as probability distributions. This allows the system to update the likelihood of a song's relevance in real-time based on natural language prompts.

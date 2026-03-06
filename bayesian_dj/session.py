@@ -29,8 +29,9 @@ class DJSession:
         playlist_length: int = 30,
         analyze: bool = False,
         output_dir: str | Path = "output",
+        parser: MusicQueryParser | None = None,
     ) -> None:
-        self.parser = MusicQueryParser(
+        self.parser = parser or MusicQueryParser(
             model_name=model_name, cache_dir=cache_dir
         )
         self.pool = SongPool(csv_path)
@@ -66,7 +67,14 @@ class DJSession:
             return None
 
         feat_matrix = self.pool.get_feature_matrix()
-        scores = self.model.thompson_sample_scores(feat_matrix)
+        posterior_scores = self.model.predict_proba_posterior(feat_matrix)
+        thompson_scores = self.model.thompson_sample_scores(feat_matrix)
+        popularity_scores = self.pool.get_popularity_scores()
+        scores = (
+            0.52 * thompson_scores
+            + 0.28 * posterior_scores
+            + 0.20 * popularity_scores
+        )
 
         available_idx = self.pool.available_indices()
         local_best = int(np.argmax(scores))

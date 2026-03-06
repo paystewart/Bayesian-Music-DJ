@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.special import expit as sigmoid
 
-from .song_pool import AUDIO_FEATURES
+from .song_pool import AUDIO_FEATURES, LOUDNESS_MAX, LOUDNESS_MIN, TEMPO_MAX, TEMPO_MIN
 
 N_FEATURES = len(AUDIO_FEATURES) + 1  # 9 audio features + bias
 
@@ -71,6 +71,16 @@ class BayesianLogisticRegression:
         self.history: list[PosteriorSnapshot] = []
 
     @staticmethod
+    def _normalize_constraint_target(key: str, target: float) -> float:
+        if key == "tempo_bpm":
+            return float(np.clip((target - TEMPO_MIN) / (TEMPO_MAX - TEMPO_MIN), 0.0, 1.0))
+        if key == "loudness":
+            # Parser constraints for loudness may be specified in raw dB.
+            if target < 0.0 or target > 1.0:
+                return float(np.clip((target - LOUDNESS_MIN) / (LOUDNESS_MAX - LOUDNESS_MIN), 0.0, 1.0))
+        return float(np.clip(target, 0.0, 1.0))
+
+    @staticmethod
     def from_constraints(
         constraints: dict[str, tuple[float, float]],
         scale: float = 2.0,
@@ -96,6 +106,7 @@ class BayesianLogisticRegression:
                 continue
             idx = FEATURE_INDEX[feat_name]
             target = (lo + hi) / 2.0
+            target = BayesianLogisticRegression._normalize_constraint_target(key, target)
             mu[idx] = (2.0 * target - 1.0) * scale
             var[idx] = constrained_var
 

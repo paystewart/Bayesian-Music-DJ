@@ -25,8 +25,10 @@ TEMPO_MIN, TEMPO_MAX = 0.0, 250.0
 @dataclass
 class SongInfo:
     pool_idx: int
+    track_id: str
     track_name: str
     artists: str
+    album_name: str
     genre: str
     popularity: int
     features: dict[str, float]
@@ -46,6 +48,12 @@ class SongPool:
     def _normalize(self) -> None:
         self._raw_loudness = self._df["loudness"].values.copy()
         self._raw_tempo = self._df["tempo"].values.copy()
+        self._genre_popularity_score = (
+            self._df.groupby("track_genre")["popularity"].rank(method="average", pct=True)
+        ).astype(np.float64)
+        self._global_popularity_score = (
+            self._df["popularity"].rank(method="average", pct=True)
+        ).astype(np.float64)
 
         self._df["loudness"] = (
             (self._df["loudness"] - LOUDNESS_MIN) / (LOUDNESS_MAX - LOUDNESS_MIN)
@@ -79,6 +87,13 @@ class SongPool:
     def available_indices(self) -> np.ndarray:
         return np.where(self._available)[0]
 
+    def get_popularity_scores(self) -> np.ndarray:
+        """Return popularity prior for available songs, favoring well-known tracks
+        within the current genre while still considering global popularity."""
+        genre_scores = self._genre_popularity_score.loc[self._available].to_numpy()
+        global_scores = self._global_popularity_score.loc[self._available].to_numpy()
+        return 0.75 * genre_scores + 0.25 * global_scores
+
     def mark_used(self, pool_idx: int) -> None:
         self._available[pool_idx] = False
 
@@ -87,8 +102,10 @@ class SongPool:
         features = {f: float(row[f]) for f in AUDIO_FEATURES}
         return SongInfo(
             pool_idx=pool_idx,
+            track_id=str(row["track_id"]),
             track_name=str(row["track_name"]),
             artists=str(row["artists"]),
+            album_name=str(row["album_name"]),
             genre=str(row["track_genre"]),
             popularity=int(row["popularity"]),
             features=features,

@@ -1,0 +1,266 @@
+{
+  "favorite_artists": [],
+  "favorite_tracks": [],
+  "favorite_genres": [],
+  "liked_songs": [
+    {
+      "track_id": "0Fs9cdPDhptWEDJmiCbkEW",
+      "track_name": "She Knows (feat. Amber Coffman & Cults)",
+      "artists": "J. Cole;Cults;Amber Coffman",
+      "album_name": "Born Sinner (Deluxe Version)",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "32OlwWuMpZ6b0aN2RZOeMS",
+      "track_name": "Uptown Funk (feat. Bruno Mars)",
+      "artists": "Mark Ronson;Bruno Mars",
+      "album_name": "Uptown Special",
+      "genre": "dance"
+    },
+    {
+      "track_id": "0e8nrvls4Qqv5Rfa2UhqmO",
+      "track_name": "THATS WHAT I WANT",
+      "artists": "Lil Nas X",
+      "album_name": "MONTERO",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "7iL6o9tox1zgHpKUfh9vuC",
+      "track_name": "In Da Club",
+      "artists": "50 Cent",
+      "album_name": "Get Rich Or Die Tryin'",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "3yfqSUWxFvZELEM4PmlwIR",
+      "track_name": "The Real Slim Shady",
+      "artists": "Eminem",
+      "album_name": "The Marshall Mathers LP",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "4LwU4Vp6od3Sb08CsP99GC",
+      "track_name": "The Next Episode",
+      "artists": "Dr. Dre;Snoop Dogg",
+      "album_name": "2001",
+      "genre": "funk"
+    },
+    {
+      "track_id": "5g9lS8deSIxItFBmZRC4vN",
+      "track_name": "Ambitionz Az A Ridah",
+      "artists": "2Pac",
+      "album_name": "All Eyez On Me",
+      "genre": "funk"
+    },
+    {
+      "track_id": "2ydUT1pFhuLDnouelIv4WH",
+      "track_name": "The Rock Show",
+      "artists": "blink-182",
+      "album_name": "Take Off Your Pants And Jacket",
+      "genre": "punk-rock"
+    },
+    {
+      "track_id": "7KXjTSCq5nL1LoYtL7XAwS",
+      "track_name": "HUMBLE.",
+      "artists": "Kendrick Lamar",
+      "album_name": "DAMN.",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "4cacyP5c3PMlfnyjpg13xW",
+      "track_name": "Betty (Get Money)",
+      "artists": "Yung Gravy",
+      "album_name": "Betty (Get Money)",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "1r8ZCjfrQxoy2wVaBUbpwg",
+      "track_name": "Thousand Miles",
+      "artists": "The Kid LAROI",
+      "album_name": "Thousand Miles",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "0VgkVdmE4gld66l8iyGjgx",
+      "track_name": "Mask Off",
+      "artists": "Future",
+      "album_name": "FUTURE",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "15JINEqzVMv3SvJTAXAKED",
+      "track_name": "Love The Way You Lie",
+      "artists": "Eminem;Rihanna",
+      "album_name": "Recovery",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "27ZZdyTSQWI7Cug2d2PkqV",
+      "track_name": "BILLIE EILISH.",
+      "artists": "Armani White",
+      "album_name": "BILLIE EILISH.",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "4LRPiXqCikLlN15c3yImP7",
+      "track_name": "As It Was",
+      "artists": "Harry Styles",
+      "album_name": "As It Was",
+      "genre": "pop"
+    },
+    {
+      "track_id": "5HCyWlXZPP0y6Gqq8TgA20",
+      "track_name": "STAY (with Justin Bieber)",
+      "artists": "The Kid LAROI;Justin Bieber",
+      "album_name": "STAY (with Justin Bieber)",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "38T0tPVZHcPZyhtOcCP7pF",
+      "track_name": "STAR WALKIN' (League of Legends Worlds Anthem)",
+      "artists": "Lil Nas X",
+      "album_name": "STAR WALKIN' (League of Legends Worlds Anthem)",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "3F5CgOj3wFlRv51JsHbxhe",
+      "track_name": "Jimmy Cooks (feat. 21 Savage)",
+      "artists": "Drake;21 Savage",
+      "album_name": "Honestly, Nevermind",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "1aL9518P5G72N92b48tuKw",
+      "track_name": "Summer High",
+      "artists": "AP Dhillon",
+      "album_name": "Summer High",
+      "genre": "hip-hop"
+    },
+    {
+      "track_id": "3dGFeK9WTwj2PAiQoaXMzB",
+      "track_name": "Brooklyn Zoo",
+      "artists": "Ol' Dirty Bastard",
+      "album_name": "Rap Classics",
+      "genre": "alternative"
+    },
+    {
+      "track_id": "5MG69A9XyXDbBbeOxdR3Tl",
+      "track_name": "don't miss me",
+      "artists": "Claire Rosinkranz",
+      "album_name": "don’t miss me",
+      "genre": "indie-pop"
+    }
+  ],
+  "spotify_art_cache": {},
+  "artist_affinity": {
+    "hiphop": 1.8,
+    "want a chill vibe": 1.8,
+    "ap dhillon": 0.04999999999999993,
+    "shubh": -0.9,
+    "ikky": -0.45,
+    "shinda kahlon": -0.45,
+    "gurinder gill": -1.35,
+    "gminxr": -0.45,
+    "gen hoshino": -0.45,
+    "bizarrap": -0.45,
+    "quevedo": -0.45,
+    "drake": 1.4,
+    "21 savage": 1.4,
+    "lil nas x": 2.8,
+    "the kid laroi": 4.199999999999999,
+    "justin bieber": 1.4,
+    "sam smith": -0.45,
+    "kim petras": -0.45,
+    "manuel turizo": -0.45,
+    "onerepublic": -0.45,
+    "harry styles": 1.4,
+    "armani white": 2.8,
+    "psy": -2.7,
+    "suga": -2.7,
+    "neeraj shridhar": -0.45,
+    "kavita seth": -0.45,
+    "divine": -0.45,
+    "eminem": 3.2999999999999994,
+    "rihanna": 1.4,
+    "falling in reverse": -0.45,
+    "koo koo kanga roo": -0.45,
+    "la bouche": -0.45,
+    "jim norton": -0.45,
+    "manni sandhu": -0.9,
+    "future": 1.4,
+    "yung gravy": 1.4,
+    "king": -0.45,
+    "kendrick lamar": 1.4,
+    "blink-182": 1.4,
+    "2pac": 1.4,
+    "dr. dre": 2.8,
+    "snoop dogg": 2.8,
+    "50 cent": 1.4,
+    "dido": -0.45,
+    "mark ronson": 1.4,
+    "bruno mars": 1.4,
+    "j. cole": 1.4,
+    "cults": 1.4,
+    "amber coffman": 1.4
+  },
+  "genre_affinity": {
+    "hip hop": 11.200000000000001,
+    "chillwave": 2.8,
+    "rap": 4.199999999999999,
+    "hip-hop": 16.150000000000006,
+    "acoustic": -0.45,
+    "dance pop": 8.4,
+    "dance": 0.95,
+    "latin": -0.45,
+    "piano": -0.45,
+    "pop": 1.4,
+    "metalcore": -0.45,
+    "kids": -0.45,
+    "german": -0.45,
+    "comedy": -0.45,
+    "punk-rock": 1.4,
+    "funk": 4.199999999999999
+  },
+  "track_affinity": {
+    "summer high": 1.1199999999999999,
+    "no love": -0.36000000000000004,
+    "baller": -0.36000000000000004,
+    "insane": -0.36000000000000004,
+    "comedy": -0.36000000000000004,
+    "quevedo: bzrp music sessions, vol. 52": -0.36000000000000004,
+    "jimmy cooks (feat. 21 savage)": 1.1199999999999999,
+    "star walkin' (league of legends worlds anthem)": 1.1199999999999999,
+    "stay (with justin bieber)": 1.1199999999999999,
+    "unholy (feat. kim petras)": -0.36000000000000004,
+    "la bachata": -0.36000000000000004,
+    "i ain't worried": -0.36000000000000004,
+    "as it was": 1.1199999999999999,
+    "billie eilish.": 2.2399999999999998,
+    "that that (prod. & feat. suga of bts)": -2.16,
+    "tum hi ho bandhu": -0.36000000000000004,
+    "kaam 25 - sacred games": -0.36000000000000004,
+    "love the way you lie": 1.1199999999999999,
+    "i'm not a vampire": -0.36000000000000004,
+    "pop see ko": -0.36000000000000004,
+    "be my lover": -0.36000000000000004,
+    "the bridge, lol": -0.36000000000000004,
+    "majhail": -0.7200000000000001,
+    "mask off": 1.1199999999999999,
+    "thousand miles": 2.2399999999999998,
+    "betty (get money)": 1.1199999999999999,
+    "tu aake dekhle": -0.36000000000000004,
+    "humble.": 1.1199999999999999,
+    "the rock show": 1.1199999999999999,
+    "ambitionz az a ridah": 1.1199999999999999,
+    "the next episode": 2.2399999999999998,
+    "the real slim shady": 2.2399999999999998,
+    "in da club": 1.1199999999999999,
+    "stan": -0.36000000000000004,
+    "thats what i want": 1.1199999999999999,
+    "uptown funk (feat. bruno mars)": 1.1199999999999999,
+    "venom - music from the motion picture": -0.36000000000000004,
+    "she knows (feat. amber coffman & cults)": 1.1199999999999999
+  },
+  "spotify_user_seeded": false,
+  "spotify_user_summary": {}
+}
