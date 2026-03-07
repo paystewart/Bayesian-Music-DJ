@@ -44,6 +44,7 @@ class SongPool:
         self._df = pd.read_csv(csv_path)
         self._normalize()
         self._available: np.ndarray = np.ones(len(self._df), dtype=bool)
+        self._external_bias = np.zeros(len(self._df), dtype=np.float64)
 
     def _normalize(self) -> None:
         self._raw_loudness = self._df["loudness"].values.copy()
@@ -92,10 +93,35 @@ class SongPool:
         within the current genre while still considering global popularity."""
         genre_scores = self._genre_popularity_score.loc[self._available].to_numpy()
         global_scores = self._global_popularity_score.loc[self._available].to_numpy()
-        return 0.75 * genre_scores + 0.25 * global_scores
+        return 0.55 * genre_scores + 0.45 * global_scores
+
+    def set_external_bias(self, scores: np.ndarray) -> None:
+        arr = np.asarray(scores, dtype=np.float64)
+        if arr.shape[0] != len(self._df):
+            raise ValueError("External bias length must match catalog length.")
+        finite = np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0)
+        lo = float(finite.min())
+        hi = float(finite.max())
+        if hi - lo < 1e-9:
+            self._external_bias = np.zeros(len(self._df), dtype=np.float64)
+            return
+        self._external_bias = (finite - lo) / (hi - lo)
+
+    def get_external_bias_scores(self) -> np.ndarray:
+        return self._external_bias[self._available]
 
     def mark_used(self, pool_idx: int) -> None:
         self._available[pool_idx] = False
+
+    def mark_used_track_ids(self, track_ids: set[str]) -> None:
+        if not track_ids:
+            return
+        normalized = {str(track_id) for track_id in track_ids if str(track_id)}
+        if not normalized:
+            return
+        mask = self._df["track_id"].fillna("").astype(str).isin(normalized)
+        if mask.any():
+            self._available &= ~mask.to_numpy()
 
     def get_song_info(self, pool_idx: int) -> SongInfo:
         row = self._df.iloc[pool_idx]

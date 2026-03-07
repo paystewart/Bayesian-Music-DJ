@@ -8,7 +8,7 @@ from music_query_parser.parser import MusicQueryParser, QuerySpec
 
 from .diagnostics import generate_all_diagnostics
 from .model import FEATURE_INDEX, BayesianLogisticRegression
-from .song_pool import SongInfo, SongPool
+from .song_pool import AUDIO_FEATURES, SongInfo, SongPool
 
 DEFAULT_CSV = Path(__file__).resolve().parent.parent / "kaggle_dataset.csv"
 
@@ -45,6 +45,7 @@ class DJSession:
         self.actions: list[str] = []
         self._current_song: SongInfo | None = None
         self._current_x: np.ndarray | None = None
+        self.last_recommendation_score: float | None = None
 
     def start(self, prompt: str) -> QuerySpec:
         """Parse the prompt, filter the song pool, and initialise the prior."""
@@ -59,7 +60,11 @@ class DJSession:
 
         return self.spec
 
-    def recommend_next(self) -> SongInfo | None:
+    def recommend_next(
+        self,
+        preferred_artists: list[str] | None = None,
+        require_artist_match: bool = False,
+    ) -> SongInfo | None:
         """Use Thompson sampling to pick the next song."""
         if self.model is None:
             raise RuntimeError("Call start() before recommending songs.")
@@ -70,20 +75,160 @@ class DJSession:
         posterior_scores = self.model.predict_proba_posterior(feat_matrix)
         thompson_scores = self.model.thompson_sample_scores(feat_matrix)
         popularity_scores = self.pool.get_popularity_scores()
+        preference_scores = self.pool.get_external_bias_scores()
+        prior_scores = self._prior_alignment_scores(feat_matrix)
+        coherence_scores = self._coherence_scores(feat_matrix)
         scores = (
-            0.52 * thompson_scores
-            + 0.28 * posterior_scores
-            + 0.20 * popularity_scores
+            0.22 * thompson_scores
+            + 0.22 * posterior_scores
+            + 0.18 * prior_scores
+            + 0.16 * popularity_scores
+            + 0.12 * preference_scores
+            + 0.10 * coherence_scores
         )
 
-        available_idx = self.pool.available_indices()
-        local_best = int(np.argmax(scores))
-        pool_idx = int(available_idx[local_best])
+        recent_artists: set[str] = set()
+        for prior_song in self.playlist[-6:]:
+            recent_artists.update(
+                artist.strip().lower()
+                for artist in prior_song.artists.split(";")
+                if artist.strip()
+            )
 
-        song = self.pool.get_song_info(pool_idx)
+        available_idx = self.pool.available_indices()
+        candidate_order = np.argsort(scores)[::-1][: min(48, len(scores))]
+        if preferred_artists:
+            preferred = {
+                artist.strip().lower()
+                for artist in preferred_artists
+                if artist and artist.strip()
+            }
+            matched_locals = [
+                int(local_idx)
+                for local_idx in candidate_order
+                if preferred
+                and any(
+                    artist_name in self.pool.get_song_info(int(available_idx[int(local_idx)])).artists.lower()
+                    for artist_name in preferred
+                )
+            ]
+            if matched_locals:
+                candidate_order = np.array(matched_locals, dtype=int)
+            elif require_artist_match:
+                matching_all = [
+                    local_idx
+                    for local_idx in range(len(available_idx))
+                    if any(
+                        artist_name in self.pool.get_song_info(int(available_idx[local_idx])).artists.lower()
+                        for artist_name in preferred
+                    )
+                ]
+                if matching_all:
+                    candidate_order = np.array(matching_all[:48], dtype=int)
+
+        best_choice = None
+        best_score = float("-inf")
+        for local_idx in candidate_order:
+            pool_idx = int(available_idx[local_idx])
+            song = self.pool.get_song_info(pool_idx)
+            adjusted = self._evaluate_candidate(
+                song=song,
+                base_score=float(scores[local_idx]),
+                posterior_score=float(posterior_scores[local_idx]),
+                prior_score=float(prior_scores[local_idx]),
+                popularity_score=float(popularity_scores[local_idx]),
+                preference_score=float(preference_scores[local_idx]),
+                coherence_score=float(coherence_scores[local_idx]),
+                recent_artists=recent_artists,
+            )
+            if adjusted > best_score:
+                best_score = adjusted
+                best_choice = (pool_idx, local_idx, song)
+
+        if best_choice is None:
+            return None
+
+        pool_idx, local_best, song = best_choice
+
         self._current_song = song
         self._current_x = feat_matrix[local_best]
+        self.last_recommendation_score = float(best_score)
         return song
+
+    def _prior_alignment_scores(self, feat_matrix: np.ndarray) -> np.ndarray:
+        if self.model is None or not self.model.history:
+            return np.zeros(feat_matrix.shape[0], dtype=np.float64)
+        prior_mu = self.model.history[0].mu
+        logits = feat_matrix @ prior_mu
+        return 1.0 / (1.0 + np.exp(-logits))
+
+    def _coherence_scores(self, feat_matrix: np.ndarray) -> np.ndarray:
+        liked_songs = [
+            song
+            for song, action in zip(self.playlist, self.actions)
+            if action == "play"
+        ]
+        if not liked_songs:
+            return np.zeros(feat_matrix.shape[0], dtype=np.float64)
+
+        liked_vectors = np.array(
+            [
+                [1.0, *[song.features[name] for name in AUDIO_FEATURES]]
+                for song in liked_songs[-5:]
+            ],
+            dtype=np.float64,
+        )
+        centroid = liked_vectors.mean(axis=0)
+        deltas = np.abs(feat_matrix - centroid)
+        distances = deltas[:, 1:].mean(axis=1)
+        return np.clip(1.0 - distances, 0.0, 1.0)
+
+    def _evaluate_candidate(
+        self,
+        *,
+        song: SongInfo,
+        base_score: float,
+        posterior_score: float,
+        prior_score: float,
+        popularity_score: float,
+        preference_score: float,
+        coherence_score: float,
+        recent_artists: set[str],
+    ) -> float:
+        adjusted = float(base_score)
+        if self.spec and self.spec.genres:
+            normalized_genres = {genre.lower().replace("-", " ") for genre in self.spec.genres}
+            song_genre = song.genre.lower().replace("-", " ")
+            if song_genre in normalized_genres:
+                adjusted += 0.08
+
+        if prior_score < 0.42:
+            adjusted -= 0.22
+        if posterior_score < 0.42:
+            adjusted -= 0.16
+        if popularity_score < 0.32:
+            adjusted -= 0.12
+        if self.playlist and coherence_score < 0.35:
+            adjusted -= 0.18
+        if preference_score > 0.72:
+            adjusted += 0.05
+
+        song_artists = {
+            artist.strip().lower()
+            for artist in song.artists.split(";")
+            if artist.strip()
+        }
+        overlap = len(song_artists & recent_artists)
+        if overlap:
+            adjusted -= 0.12 * overlap
+
+        repeat_count = sum(
+            1
+            for prior_song in self.playlist[-8:]
+            if prior_song.artists.lower() == song.artists.lower()
+        )
+        adjusted -= 0.18 * repeat_count
+        return adjusted
 
     def record_feedback(self, played: bool) -> dict[str, float]:
         """Update the model with the user's play/skip decision.
@@ -110,6 +255,15 @@ class DJSession:
         self._current_x = None
 
         return {name: float(delta[idx]) for name, idx in FEATURE_INDEX.items()}
+
+    def advance_without_feedback(self) -> None:
+        """Advance past the current song without updating the posterior."""
+        if self._current_song is None:
+            return
+
+        self.pool.mark_used(self._current_song.pool_idx)
+        self._current_song = None
+        self._current_x = None
 
     def run_interactive(self, prompt: str) -> None:
         """Full interactive CLI loop."""
