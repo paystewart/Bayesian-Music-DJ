@@ -30,9 +30,15 @@ except ModuleNotFoundError:
     go = Any
     HAS_PLOTLY = False
 
-from bayesian_dj.session import DJSession, DEFAULT_CSV
+from bayesian_dj.session import DJSession
+from bayesian_dj.discovery import (
+    DEFAULT_DISCOVERY_WEIGHTS,
+    discovery_score_frame,
+    update_beta_bucket,
+)
+from bayesian_dj.prompt_intent import PromptIntent, parse_prompt_intent
 from bayesian_dj.model import BayesianLogisticRegression
-from bayesian_dj.song_pool import AUDIO_FEATURES
+from bayesian_dj.song_pool import AUDIO_FEATURES, SongPool, filter_non_adult_catalog_df
 from music_query_parser.parser import KNOWN_MOODS, MOOD_ALIASES, MusicQueryParser, QuerySpec
 
 st.set_page_config(
@@ -151,11 +157,6 @@ ARTIST_NAME_ALIASES = {
 }
 
 
-@st.cache_data
-def load_catalog() -> pd.DataFrame:
-    return pd.read_csv(DEFAULT_CSV)
-
-
 @st.cache_resource
 def get_parser() -> MusicQueryParser:
     return MusicQueryParser()
@@ -168,30 +169,20 @@ def normalize_artist_name(value: str) -> str:
     return normalized
 
 
-@st.cache_data
 def catalog_artist_lookup() -> tuple[list[str], dict[str, str]]:
-    catalog = load_catalog()
-    exploded = (
-        catalog.assign(artist_name=catalog["artists"].fillna("").str.split(";"))
-        .explode("artist_name")
-        .assign(artist_name=lambda df: df["artist_name"].fillna("").str.strip())
-    )
-    exploded = exploded.loc[exploded["artist_name"].ne("")]
-    summary = (
-        exploded.groupby("artist_name", as_index=False)
-        .agg(popularity=("popularity", "mean"), appearances=("track_name", "count"))
-        .sort_values(["appearances", "popularity", "artist_name"], ascending=[False, False, True])
+    """Return artist lookup built from the user's Spotify taste profile."""
+    profile = current_taste_profile()
+    artists_by_weight = sorted(
+        profile.get("artist_affinity", {}).items(), key=lambda kv: kv[1], reverse=True
     )
     mapping: dict[str, str] = {}
     ordered: list[str] = []
-    for artist in summary["artist_name"].tolist():
+    for artist, _ in artists_by_weight:
         normalized = normalize_artist_name(artist)
         if len(normalized) < 3 or normalized in mapping:
             continue
         mapping[normalized] = artist
         ordered.append(normalized)
-        if len(ordered) >= 3000:
-            break
     for alias, canonical in ARTIST_NAME_ALIASES.items():
         mapping.setdefault(normalize_artist_name(alias), canonical)
         ordered.insert(0, normalize_artist_name(alias))
@@ -203,11 +194,21 @@ def default_ui_state() -> dict[str, Any]:
         "artist_affinity": {},
         "genre_affinity": {},
         "track_affinity": {},
+        "artist_posterior": {},
+        "genre_posterior": {},
+        "track_posterior": {},
+        "novelty_posterior": {"alpha": 6.5, "beta": 3.5},
+        "popularity_posterior": {"alpha": 5.8, "beta": 4.2},
+        "recent_positive_examples": [],
+        "recent_negative_examples": [],
+        "session_prompt_history": [],
         "liked_songs": [],
         "spotify_art_cache": {},
         "spotify_user_seeded": False,
         "spotify_user_summary": {},
         "spotify_saved_track_ids": [],
+        "spotify_recent_track_ids": [],
+        "spotify_top_track_ids": [],
         "spotify_synced_track_ids": [],
         "spotify_auth": {},
         "spotify_oauth_state": "",
@@ -236,7 +237,7 @@ def spotify_client_credentials() -> tuple[str | None, str | None]:
 
 
 def spotify_redirect_uri() -> str:
-    return os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost:8501")
+    return os.getenv("SPOTIFY_REDIRECT_URI", "http://127.0.0.1:8501")
 
 
 def inject_styles() -> None:
@@ -732,6 +733,8 @@ def init_state() -> None:
     st.session_state["is_playing"] = False
     st.session_state["speech_payload"] = None
     st.session_state["last_transition_round"] = 0
+    st.session_state["completed_song_count"] = 0
+    st.session_state["completed_song_keys"] = set()
     st.session_state["recent_intervention_routes"] = []
     st.session_state["latest_model_update"] = ""
     st.session_state["playback_song"] = None
@@ -739,9 +742,12 @@ def init_state() -> None:
     st.session_state["back_song"] = None
     st.session_state["showing_back_song"] = False
     st.session_state["seen_track_ids"] = set()
+    st.session_state["seen_track_signatures"] = set()
     st.session_state["pending_reaction"] = None
+    st.session_state["queued_prompt"] = ""
     st.session_state["spotify_auth_session"] = {}
     st.session_state["spotify_oauth_state_session"] = ""
+    st.session_state["welcome_greeted"] = False
     st.session_state["_fresh_init_done"] = True
 
 
@@ -753,6 +759,8 @@ def reset_session() -> None:
     st.session_state["is_playing"] = False
     st.session_state["speech_payload"] = None
     st.session_state["last_transition_round"] = 0
+    st.session_state["completed_song_count"] = 0
+    st.session_state["completed_song_keys"] = set()
     st.session_state["recent_intervention_routes"] = []
     st.session_state["latest_model_update"] = ""
     st.session_state["playback_song"] = None
@@ -760,7 +768,10 @@ def reset_session() -> None:
     st.session_state["back_song"] = None
     st.session_state["showing_back_song"] = False
     st.session_state["seen_track_ids"] = set()
+    st.session_state["seen_track_signatures"] = set()
     st.session_state["pending_reaction"] = None
+    st.session_state["queued_prompt"] = ""
+    st.session_state["welcome_greeted"] = False
 
 
 def session_complete(session: DJSession | None) -> bool:
@@ -778,12 +789,41 @@ def ensure_current_song(session: DJSession) -> None:
         return
     if session._current_song is None:
         song = session.recommend_next()
-        if song is None:
-            st.session_state["session_finished"] = True
-        elif getattr(song, "track_id", ""):
+        if song is None and replenish_session_pool(session):
+            song = session.recommend_next()
+        if song is None and replenish_session_pool(session):
+            song = session.recommend_next()
+        st.session_state["session_finished"] = song is None
+        if song is not None and getattr(song, "track_id", ""):
             seen = set(st.session_state.get("seen_track_ids", set()))
             seen.add(str(song.track_id))
             st.session_state["seen_track_ids"] = seen
+        if song is not None:
+            signatures = set(st.session_state.get("seen_track_signatures", set()))
+            signatures.add(f"{song.track_name.strip().lower()}__{song.artists.strip().lower()}")
+            st.session_state["seen_track_signatures"] = signatures
+
+
+def song_progress_key(song) -> str:
+    track_id = str(getattr(song, "track_id", "") or "").strip()
+    if track_id:
+        return f"id:{track_id}"
+    name = str(getattr(song, "track_name", "") or "").strip().lower()
+    artists = str(getattr(song, "artists", "") or "").strip().lower()
+    return f"sig:{name}__{artists}"
+
+
+def mark_song_completed(song) -> bool:
+    key = song_progress_key(song)
+    if not key:
+        return False
+    completed = set(st.session_state.get("completed_song_keys", set()))
+    if key in completed:
+        return False
+    completed.add(key)
+    st.session_state["completed_song_keys"] = completed
+    st.session_state["completed_song_count"] = int(st.session_state.get("completed_song_count", 0)) + 1
+    return True
 
 
 def clone_spec(spec: QuerySpec) -> QuerySpec:
@@ -803,23 +843,545 @@ def spec_feature_vector(song) -> np.ndarray:
     return np.array([1.0, *[song.features[name] for name in AUDIO_FEATURES]], dtype=np.float64)
 
 
+def fallback_audio_features(spec: QuerySpec) -> dict[str, float]:
+    defaults: dict[str, float] = {
+        "danceability": 0.66,
+        "energy": 0.64,
+        "loudness": -8.5,
+        "speechiness": 0.10,
+        "acousticness": 0.18,
+        "instrumentalness": 0.03,
+        "liveness": 0.18,
+        "valence": 0.56,
+        "tempo": 118.0,
+    }
+    for feature, bounds in (spec.constraints or {}).items():
+        midpoint = float(bounds[0] + bounds[1]) / 2.0
+        if feature == "tempo_bpm":
+            defaults["tempo"] = midpoint
+        elif feature in defaults:
+            defaults[feature] = midpoint
+    return defaults
+
+
+def fetch_spotify_song_pool(
+    token: str,
+    spec: QuerySpec,
+    intent: PromptIntent | None = None,
+    n_target: int = 900,
+) -> pd.DataFrame:
+    """Build a discovery-heavy Spotify candidate pool.
+
+    Spotify history shapes the prior and seeds the search space, but the pool itself
+    is intentionally tilted toward tracks the user has not already saved or replayed.
+    """
+    intent = intent or PromptIntent()
+    tracks: dict[str, dict[str, Any]] = {}
+    top_all_time_tracks: list[dict[str, Any]] = []
+    top_track_ids: set[str] = set(current_taste_profile().get("spotify_top_track_ids", []))
+    saved_track_ids: set[str] = set(current_taste_profile().get("spotify_saved_track_ids", []))
+    recent_track_ids: set[str] = set(current_taste_profile().get("spotify_recent_track_ids", []))
+    top_artist_names: list[str] = []
+
+    def _track_prompt_score(track: dict[str, Any], query: str = "", genre_tag: str = "") -> float:
+        score = 0.0
+        track_name = str(track.get("name", "") or "").lower()
+        artist_names = " ".join(
+            str(artist.get("name", "") or "").lower()
+            for artist in track.get("artists", [])
+            if isinstance(artist, dict)
+        )
+        query_text = (query or "").lower()
+        genre_text = (genre_tag or "").lower()
+        if query_text and query_text in track_name:
+            score += 0.75
+        if query_text and query_text in artist_names:
+            score += 0.65
+        if genre_text and genre_text in query_text:
+            score += 0.15
+        if intent.seed_artists and any(artist.lower() in artist_names for artist in intent.seed_artists[:3]):
+            score += 0.75 if intent.direct_match_weight > 0.6 else 0.55
+        if intent.seed_tracks and any(track_ref.lower() in track_name for track_ref in intent.seed_tracks[:2]):
+            score += 0.60
+        if genre_tag and intent.genres:
+            normalized = {normalize_affinity_label(item) for item in intent.genres}
+            if normalize_affinity_label(genre_tag) in normalized:
+                score += 0.35
+        if any(term.lower() in track_name or term.lower() in artist_names for term in intent.semantic_terms[:6]):
+            score += 0.16
+        return min(score, 1.0)
+
+    def _ingest_track_obj(
+        track: dict[str, Any],
+        *,
+        genre_tag: str = "",
+        source_type: str = "search",
+        prompt_query: str = "",
+    ) -> None:
+        tid = str(track.get("id", "") or "")
+        if not tid or tid in tracks:
+            return
+        artist_names = [a.get("name", "") for a in track.get("artists", []) if a.get("name")]
+        normalized_artists = {normalize_affinity_label(name) for name in artist_names}
+        excluded = {normalize_affinity_label(name) for name in intent.excluded_artists}
+        if excluded and normalized_artists & excluded:
+            return
+        artist_ids = [str(a.get("id", "") or "") for a in track.get("artists", []) if a.get("id")]
+        release_date = ((track.get("album") or {}).get("release_date") or "").strip()
+        release_year = int(release_date[:4]) if len(release_date) >= 4 and release_date[:4].isdigit() else 0
+        is_saved = tid in saved_track_ids
+        is_recent = tid in recent_track_ids
+        is_top_track = tid in top_track_ids
+        novelty_score = 0.78 + 0.28 * intent.exploration_weight
+        if is_saved:
+            novelty_score -= 0.28
+        if is_recent:
+            novelty_score -= 0.18
+        if is_top_track:
+            novelty_score -= 0.14
+        if source_type == "history_anchor":
+            novelty_score -= 0.12
+        elif source_type == "related_artist_top":
+            novelty_score += 0.14
+        elif source_type == "recommendation":
+            novelty_score += 0.10
+        elif source_type == "adjacent_search":
+            novelty_score += 0.18
+        tracks[tid] = {
+            "track_id": tid,
+            "track_name": track.get("name", ""),
+            "artists": ";".join(artist_names),
+            "artist_ids": ";".join(artist_ids),
+            "album_name": (track.get("album") or {}).get("name", ""),
+            "track_genre": genre_tag,
+            "popularity": track.get("popularity", 50),
+            "artist_popularity": 0,
+            "release_year": release_year,
+            "source_type": source_type,
+            "prompt_score": _track_prompt_score(track, query=prompt_query, genre_tag=genre_tag),
+            "is_saved": is_saved,
+            "is_recent": is_recent,
+            "is_top_track": is_top_track,
+            "novelty_score": float(np.clip(novelty_score, 0.0, 1.0)),
+        }
+
+    def _search_tracks(query: str, genre_tag: str = "") -> None:
+        if not query.strip():
+            return
+        result = spotify_api_get(
+            "https://api.spotify.com/v1/search",
+            token,
+            {
+                "q": query,
+                "type": "track",
+                "limit": "50",
+                "market": "US",
+            },
+        )
+        for track in (result or {}).get("tracks", {}).get("items", []) or []:
+            _ingest_track_obj(track, genre_tag=genre_tag, source_type="search", prompt_query=query)
+
+    def _resolve_artist_ids(names: list[str]) -> list[str]:
+        ids: list[str] = []
+        seen: set[str] = set()
+        for name in names[:8]:
+            result = spotify_api_get(
+                "https://api.spotify.com/v1/search",
+                token,
+                {"q": name, "type": "artist", "limit": "1", "market": "US"},
+            )
+            items = (result or {}).get("artists", {}).get("items", [])
+            if items:
+                artist_id = str(items[0].get("id", "") or "")
+                if artist_id and artist_id not in seen:
+                    seen.add(artist_id)
+                    ids.append(artist_id)
+        return ids
+
+    def _fetch_artist_top_tracks(artist_id: str, source_type: str, genre_tag: str = "") -> None:
+        result = spotify_api_get(
+            f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks",
+            token,
+            {"market": "US"},
+        )
+        for track in (result or {}).get("tracks", []) or []:
+            _ingest_track_obj(track, genre_tag=genre_tag, source_type=source_type, prompt_query=genre_tag)
+
+    def _fetch_related_artist_tracks(artist_id: str, genre_tag: str = "") -> None:
+        result = spotify_api_get(
+            f"https://api.spotify.com/v1/artists/{artist_id}/related-artists",
+            token,
+        )
+        for artist in ((result or {}).get("artists") or [])[:8]:
+            related_id = str(artist.get("id", "") or "")
+            if related_id:
+                _fetch_artist_top_tracks(related_id, "related_artist_top", genre_tag)
+
+    long_tracks = spotify_api_get(
+        "https://api.spotify.com/v1/me/top/tracks",
+        token,
+        {"limit": "30", "time_range": "long_term"},
+    )
+    medium_tracks = spotify_api_get(
+        "https://api.spotify.com/v1/me/top/tracks",
+        token,
+        {"limit": "20", "time_range": "medium_term"},
+    )
+    short_tracks = spotify_api_get(
+        "https://api.spotify.com/v1/me/top/tracks",
+        token,
+        {"limit": "15", "time_range": "short_term"},
+    )
+    top_artists_payload = spotify_api_get(
+        "https://api.spotify.com/v1/me/top/artists",
+        token,
+        {"limit": "12", "time_range": "long_term"},
+    )
+    top_all_time_ids = [
+        str(track.get("id", "") or "")
+        for track in (long_tracks or {}).get("items", []) or []
+        if track.get("id")
+    ]
+    if top_artists_payload:
+        top_artist_names = [
+            str(item.get("name", "") or "")
+            for item in top_artists_payload.get("items", []) or []
+            if item.get("name")
+        ]
+
+    history_seed_ids: list[str] = []
+    for payload in (long_tracks, medium_tracks, short_tracks):
+        for track in (payload or {}).get("items", []) or []:
+            tid = str(track.get("id", "") or "")
+            if tid:
+                history_seed_ids.append(tid)
+                top_track_ids.add(tid)
+            if payload is long_tracks:
+                top_all_time_tracks.append(track)
+
+    for item in spotify_paginated_items("https://api.spotify.com/v1/me/tracks", token, {"limit": "50"}, pages=2):
+        track = item.get("track") or {}
+        if isinstance(track, dict):
+            tid = str(track.get("id", "") or "")
+            if tid:
+                saved_track_ids.add(tid)
+
+    for item in spotify_paginated_items("https://api.spotify.com/v1/me/player/recently-played", token, {"limit": "50"}, pages=2):
+        track = item.get("track") or {}
+        if isinstance(track, dict):
+            tid = str(track.get("id", "") or "")
+            if tid:
+                recent_track_ids.add(tid)
+
+    # Map Spotify genre seeds — Spotify uses specific slug values
+    SPOTIFY_GENRE_MAP: dict[str, str] = {
+        "hip hop": "hip-hop", "hip-hop": "hip-hop", "trap": "trap", "rap": "hip-hop",
+        "r&b": "r-n-b", "rnb": "r-n-b", "soul": "soul", "neo soul": "soul",
+        "pop": "pop", "dance pop": "dance-pop", "indie pop": "indie-pop",
+        "alternative": "alternative", "alt": "alternative", "indie": "indie",
+        "rock": "rock", "punk": "punk", "metal": "metal", "hard rock": "hard-rock",
+        "edm": "edm", "electronic": "electronic", "house": "house", "techno": "techno",
+        "drum and bass": "drum-and-bass", "dubstep": "dubstep", "ambient": "ambient",
+        "jazz": "jazz", "blues": "blues", "country": "country", "folk": "folk",
+        "latin": "latin", "reggae": "reggaeton", "reggaeton": "reggaeton",
+        "classical": "classical", "piano": "piano", "acoustic": "acoustic",
+        "afrobeats": "afrobeat", "k-pop": "k-pop", "kpop": "k-pop",
+        "workout": "work-out", "party": "party", "chill": "chill",
+    }
+    seed_genres = []
+    for g in (spec.genres or []):
+        slug = SPOTIFY_GENRE_MAP.get(g.lower().replace("-", " "), g.lower().replace(" ", "-"))
+        if slug and slug not in seed_genres:
+            seed_genres.append(slug)
+    seed_genres = seed_genres[:5]
+
+    # MOOD → audio feature targets for better matching
+    MOOD_TARGETS: dict[str, dict[str, float]] = {
+        "hype": {"target_energy": 0.92, "target_danceability": 0.85, "target_valence": 0.75, "target_tempo": 140.0},
+        "energetic": {"target_energy": 0.88, "target_danceability": 0.80},
+        "aggressive": {"target_energy": 0.92, "target_valence": 0.35},
+        "chill": {"target_energy": 0.35, "target_danceability": 0.55, "target_valence": 0.55},
+        "melancholy": {"target_energy": 0.30, "target_valence": 0.20, "target_acousticness": 0.60},
+        "sad": {"target_energy": 0.28, "target_valence": 0.15, "target_acousticness": 0.55},
+        "happy": {"target_energy": 0.72, "target_valence": 0.85, "target_danceability": 0.75},
+        "focus": {"target_energy": 0.45, "target_speechiness": 0.04, "target_instrumentalness": 0.40},
+        "romantic": {"target_energy": 0.45, "target_valence": 0.60, "target_acousticness": 0.45},
+        "party": {"target_energy": 0.88, "target_danceability": 0.88, "target_valence": 0.80},
+        "workout": {"target_energy": 0.93, "target_danceability": 0.78, "target_tempo": 145.0},
+        "dark": {"target_energy": 0.65, "target_valence": 0.20, "target_acousticness": 0.20},
+        "smooth": {"target_energy": 0.45, "target_danceability": 0.65, "target_valence": 0.65},
+        "driving": {"target_energy": 0.75, "target_danceability": 0.70, "target_tempo": 125.0},
+        "confident": {"target_energy": 0.80, "target_valence": 0.65},
+        "afternoon": {"target_energy": 0.60, "target_valence": 0.65, "target_danceability": 0.68},
+    }
+    mood_params: dict[str, str] = {}
+    for mood in (spec.moods or []):
+        targets = MOOD_TARGETS.get(mood.lower(), {})
+        for k, v in targets.items():
+            if k not in mood_params:
+                mood_params[k] = str(v)
+
+    def _constraint_params() -> dict[str, str]:
+        params: dict[str, str] = {}
+        for feat, (lo, hi) in spec.constraints.items():
+            mid = (lo + hi) / 2.0
+            api_feat = feat if feat != "tempo_bpm" else "tempo"
+            params[f"target_{api_feat}"] = f"{mid:.4f}"
+        return params
+
+    constraint_params = _constraint_params()
+    # mood_params override explicit constraints for better mood fidelity
+    combined_targets = {**constraint_params, **mood_params}
+
+    requested_artist_names = list(dict.fromkeys(spec.seed_artists or []))
+    seed_artist_ids = _resolve_artist_ids(requested_artist_names[:5] if requested_artist_names else top_artist_names[:3])
+    history_artist_ids = _resolve_artist_ids(top_artist_names[:3]) if requested_artist_names else []
+
+    def _fetch_batch(genres: list[str], artist_ids: list[str], genre_tag: str) -> None:
+        total = len(genres) + len(artist_ids)
+        if total == 0:
+            return
+        params: dict[str, str] = {"limit": "100", **combined_targets}
+        if genres:
+            params["seed_genres"] = ",".join(genres[:5])
+        if artist_ids:
+            remaining = 5 - len(genres)
+            if remaining > 0:
+                params["seed_artists"] = ",".join(artist_ids[:remaining])
+        result = spotify_api_get("https://api.spotify.com/v1/recommendations", token, params)
+        for track in (result or {}).get("tracks", []):
+            _ingest_track_obj(track, genre_tag=genre_tag, source_type="recommendation", prompt_query=genre_tag)
+
+    search_anchor_genres = list(dict.fromkeys((intent.genres or []) + list(spec.genres or [])))[:6]
+
+    # Primary seeds: genre + artist combined
+    if seed_genres or seed_artist_ids:
+        for i in range(0, max(1, len(seed_genres)), 3):
+            chunk = seed_genres[i: i + 3]
+            _fetch_batch(chunk, seed_artist_ids if i == 0 else [], chunk[0] if chunk else "")
+            if len(tracks) >= n_target:
+                break
+
+    prompt_artist_ids = _resolve_artist_ids(intent.seed_artists or spec.seed_artists or [])
+    for artist_id in prompt_artist_ids[:3]:
+        genre_tag = (intent.genres or spec.genres or [""])[0]
+        _fetch_artist_top_tracks(artist_id, "seed_artist_top", genre_tag)
+        _fetch_related_artist_tracks(artist_id, genre_tag)
+        if len(tracks) >= n_target:
+            break
+
+    for artist_id in history_artist_ids[:4]:
+        _fetch_related_artist_tracks(artist_id, (intent.genres or spec.genres or [""])[0])
+        if len(tracks) >= n_target:
+            break
+
+    # Taste-profile genres as fallback filler
+    if len(tracks) < n_target // 2:
+        profile = current_taste_profile()
+        top_genres = top_affinity_items(profile.get("genre_affinity", {}), limit=5)
+        fb_genres = [SPOTIFY_GENRE_MAP.get(g.lower(), g.lower().replace(" ", "-")) for g in top_genres]
+        fb_genres = [g for g in fb_genres if g]
+        if fb_genres:
+            _fetch_batch(fb_genres[:5], [], fb_genres[0])
+
+    # Seed recommendations from liked songs when the pool is still thin
+    if len(tracks) < n_target // 3 and history_seed_ids:
+        seed_ids = list(dict.fromkeys(history_seed_ids))[:5]
+        params: dict[str, str] = {"limit": "100", "seed_tracks": ",".join(seed_ids), **combined_targets}
+        result = spotify_api_get("https://api.spotify.com/v1/recommendations", token, params)
+        for track in (result or {}).get("tracks", []):
+            _ingest_track_obj(track, source_type="recommendation", prompt_query=" ".join(spec.genres[:2] + spec.moods[:2]))
+
+    # Search fallback: when recommendations are sparse, widen the pool with
+    # direct US-market track searches based on the parsed request.
+    if len(tracks) < max(160, n_target // 3):
+        search_queries: list[tuple[str, str, str]] = []
+        for query in spec.spotify_search_queries[:16]:
+            genre_tag = (intent.genres or spec.genres or [""])[0]
+            source_type = "adjacent_search" if intent.exploration_weight >= 0.7 else "search"
+            search_queries.append((query, genre_tag, source_type))
+        for term in intent.semantic_terms[:10]:
+            genre_tag = (intent.genres or spec.genres or [""])[0]
+            search_queries.append((term, genre_tag, "adjacent_search"))
+        for production_tag in intent.production_tags[:5]:
+            genre_tag = (intent.genres or spec.genres or [""])[0]
+            search_queries.append((f"{production_tag} {genre_tag}".strip(), genre_tag, "adjacent_search"))
+        for activity in intent.activity_context[:4]:
+            genre_tag = (intent.genres or spec.genres or [""])[0]
+            search_queries.append((f"{activity} {genre_tag}".strip(), genre_tag, "adjacent_search"))
+        for artist in (intent.seed_artists or spec.seed_artists or [])[:6]:
+            artist_query = artist
+            if intent.moods or spec.moods:
+                artist_query = f"{artist} {' '.join((intent.moods or spec.moods)[:2])}"
+            search_queries.append((artist_query, (intent.genres or spec.genres or [""])[0], "search"))
+        for genre in search_anchor_genres[:6]:
+            search_queries.append((f"{genre} popular", genre, "search"))
+            if intent.moods or spec.moods:
+                search_queries.append((f"{genre} {' '.join((intent.moods or spec.moods)[:2])}", genre, "adjacent_search"))
+            if intent.production_tags:
+                search_queries.append((f"{genre} {' '.join(intent.production_tags[:2])}", genre, "adjacent_search"))
+        for artist in (intent.seed_artists or spec.seed_artists or [])[:4]:
+            search_queries.append((f"{artist} related artists", "", "adjacent_search"))
+            search_queries.append((f"{artist} deep cuts", "", "adjacent_search"))
+        if intent.activity_context and intent.moods:
+            search_queries.append((f"{intent.activity_context[0]} {' '.join(intent.moods[:2])}", "", "adjacent_search"))
+
+        seen_queries: set[str] = set()
+        for query, genre_tag, source_type in search_queries:
+            key = query.strip().lower()
+            if not key or key in seen_queries:
+                continue
+            seen_queries.add(key)
+            result = spotify_api_get(
+                "https://api.spotify.com/v1/search",
+                token,
+                {
+                    "q": query,
+                    "type": "track",
+                    "limit": "50",
+                    "market": "US",
+                },
+            )
+            for track in (result or {}).get("tracks", {}).get("items", []) or []:
+                _ingest_track_obj(track, genre_tag=genre_tag, source_type=source_type, prompt_query=query)
+            if len(tracks) >= n_target:
+                break
+
+    if len(tracks) < max(40, n_target // 8):
+        for track in top_all_time_tracks[:8]:
+            _ingest_track_obj(track, source_type="history_anchor", prompt_query="history anchor")
+            if len(tracks) >= max(40, n_target // 8):
+                break
+
+    if not tracks:
+        return pd.DataFrame()
+
+    unique_artist_ids = sorted(
+        {
+            artist_id
+            for row in tracks.values()
+            for artist_id in str(row.get("artist_ids", "") or "").split(";")
+            if artist_id
+        }
+    )
+    artist_meta: dict[str, dict[str, Any]] = {}
+    for i in range(0, len(unique_artist_ids), 50):
+        chunk = unique_artist_ids[i:i + 50]
+        payload = spotify_api_get("https://api.spotify.com/v1/artists", token, {"ids": ",".join(chunk)})
+        for artist in (payload or {}).get("artists", []) or []:
+            if isinstance(artist, dict) and artist.get("id"):
+                artist_meta[str(artist["id"])] = artist
+
+    # Fetch audio features in batches of 100
+    track_ids = list(tracks.keys())
+    audio_features: dict[str, dict[str, Any]] = {}
+    for i in range(0, len(track_ids), 100):
+        batch = track_ids[i: i + 100]
+        result = spotify_api_get(
+            "https://api.spotify.com/v1/audio-features", token, {"ids": ",".join(batch)}
+        )
+        for feat in (result or {}).get("audio_features", []):
+            if feat and feat.get("id"):
+                audio_features[feat["id"]] = feat
+
+    rows: list[dict[str, Any]] = []
+    feature_defaults = fallback_audio_features(spec)
+    for tid, track_data in tracks.items():
+        feat = audio_features.get(tid)
+        row: dict[str, Any] = {**track_data}
+        artist_ids = [artist_id for artist_id in str(track_data.get("artist_ids", "")).split(";") if artist_id]
+        artist_popularity = 0.0
+        derived_genres: list[str] = []
+        for artist_id in artist_ids[:2]:
+            meta = artist_meta.get(artist_id, {})
+            artist_popularity = max(artist_popularity, float(meta.get("popularity", 0) or 0))
+            derived_genres.extend(str(genre) for genre in (meta.get("genres") or [])[:2])
+        row["artist_popularity"] = artist_popularity
+        if not row.get("track_genre") and derived_genres:
+            row["track_genre"] = derived_genres[0]
+        for f in AUDIO_FEATURES:
+            if feat and feat.get(f) is not None:
+                row[f] = float(feat.get(f, 0.0))
+            else:
+                row[f] = float(feature_defaults[f])
+        row["_seed_all_time_rank"] = top_all_time_ids.index(tid) if tid in top_all_time_ids else -1
+        rows.append(row)
+
+    return pd.DataFrame(rows) if rows else pd.DataFrame()
+
+
 def build_session_from_spec(
     spec: QuerySpec,
     playlist_length: int,
+    prompt_intent: PromptIntent | None = None,
     prior_feedback: list[tuple[object, str]] | None = None,
     excluded_track_ids: set[str] | None = None,
-) -> DJSession:
-    catalog = load_catalog()
+    excluded_track_signatures: set[str] | None = None,
+) -> tuple["DJSession", str | None]:
+    """Build a DJSession backed by a Spotify-fetched song pool.
+
+    Returns ``(session, taste_note)`` where *taste_note* is a human-readable
+    string about taste-profile blending, or ``None``.
+    """
+    token = spotify_user_token()
+    profile = current_taste_profile()
+
+    songs_df = fetch_spotify_song_pool(token, spec, prompt_intent) if token else pd.DataFrame()
+
+    # Apply taste-profile blending against fetched songs
+    blended_spec = clone_spec(spec)
+    taste_note: str | None = None
+    if not songs_df.empty:
+        blended_spec, taste_note = apply_taste_profile(blended_spec, songs_df)
+
+    if songs_df.empty:
+        pool = SongPool.from_songs(pd.DataFrame())
+    else:
+        pool = SongPool.from_songs(songs_df)
+        pool.filter_by_genres(blended_spec.genres)
+        if pool.n_available == 0 and len(songs_df) > 0:
+            # Spotify genre labels can be sparse or imperfect. If the strict
+            # genre pass wipes everything out, fall back to the fetched pool
+            # instead of failing the session.
+            pool = SongPool.from_songs(songs_df)
+        pool.mark_used_track_ids(set(excluded_track_ids or set()))
+        pool.mark_used_track_signatures(set(excluded_track_signatures or set()))
+        pool.set_external_bias(
+            catalog_preference_scores(songs_df, profile, blended_spec, prompt_intent).to_numpy(dtype=float)
+        )
+
     session = DJSession(
-        csv_path=DEFAULT_CSV,
+        csv_path=None,
+        pool=pool,
         playlist_length=playlist_length,
         parser=get_parser(),
     )
-    session.spec = clone_spec(spec)
-    session.pool.filter_by_genres(session.spec.genres)
-    session.pool.mark_used_track_ids(set(excluded_track_ids or set()))
-    session.pool.set_external_bias(catalog_preference_scores(catalog, current_taste_profile(), spec).to_numpy(dtype=float))
+    session.spec = blended_spec
+    session.prompt_intent = prompt_intent or PromptIntent()
     session.model = BayesianLogisticRegression.from_constraints(dict(session.spec.constraints))
+
+    # Warm-start the prior from the user's long-term top tracks first.
+    # If Spotify didn't give us enough of those, fall back to the strongest
+    # taste-profile matches in the current pool.
+    seeded_updates = 0
+    if not songs_df.empty and "_seed_all_time_rank" in pool._df.columns:
+        top_all_time = (
+            pool._df.loc[pool._df["_seed_all_time_rank"] >= 0]
+            .sort_values("_seed_all_time_rank")
+            .head(30)
+        )
+        for pool_idx in top_all_time.index.tolist():
+            session.model.update(spec_feature_vector(pool.get_song_info(int(pool_idx))), 1)
+            seeded_updates += 1
+
+    if seeded_updates < 20 and pool.n_available > 0:
+        feat_matrix = pool.get_feature_matrix()
+        bias_scores = pool.get_external_bias_scores()
+        if len(bias_scores) > 0 and bias_scores.max() > 0:
+            top_local = np.argsort(bias_scores)[::-1][:min(30 - seeded_updates, len(bias_scores))]
+            for local_i in top_local:
+                session.model.update(feat_matrix[local_i], 1)
+
     session.model.snapshot()
     session.initial_candidate_count = session.pool.n_available
 
@@ -830,7 +1392,12 @@ def build_session_from_spec(
         session.model.snapshot(x=x, y=y)
         session.playlist.append(song)
         session.actions.append(action)
-        session.pool.mark_used(song.pool_idx)
+        session.pool.mark_song_used(
+            pool_idx=getattr(song, "pool_idx", None),
+            track_id=str(getattr(song, "track_id", "") or ""),
+            track_name=str(getattr(song, "track_name", "") or ""),
+            artists=str(getattr(song, "artists", "") or ""),
+        )
 
     if session.pool.n_available > 0:
         if not prior_feedback and session.spec.seed_artists:
@@ -840,7 +1407,95 @@ def build_session_from_spec(
             )
         else:
             session.recommend_next()
-    return session
+    return session, taste_note
+
+
+def _combined_pool_df(session: DJSession, extra_df: pd.DataFrame) -> pd.DataFrame:
+    existing = getattr(session.pool, "_df", pd.DataFrame()).copy()
+    frames = [frame for frame in (existing, extra_df) if frame is not None and not frame.empty]
+    if not frames:
+        return pd.DataFrame()
+    merged = pd.concat(frames, ignore_index=True)
+    if "track_id" in merged.columns:
+        merged["track_id"] = merged["track_id"].fillna("").astype(str)
+        non_empty = merged["track_id"] != ""
+        with_ids = merged.loc[non_empty].drop_duplicates(subset=["track_id"], keep="first")
+        without_ids = merged.loc[~non_empty].copy()
+        if not without_ids.empty:
+            without_ids["_sig"] = (
+                without_ids["track_name"].fillna("").astype(str).str.lower().str.strip()
+                + "__"
+                + without_ids["artists"].fillna("").astype(str).str.lower().str.strip()
+            )
+            without_ids = without_ids.drop_duplicates(subset=["_sig"], keep="first").drop(columns=["_sig"])
+        merged = pd.concat([with_ids, without_ids], ignore_index=True)
+    return merged.reset_index(drop=True)
+
+
+def replenish_session_pool(session: DJSession) -> bool:
+    if session is None or getattr(session, "_current_song", None) is not None:
+        return False
+    token = spotify_user_token()
+    if not token or session.spec is None:
+        return False
+
+    current_df = getattr(session.pool, "_df", pd.DataFrame())
+    if session.pool.n_available > max(18, min(80, len(current_df) // 5 if len(current_df) else 0)):
+        return False
+
+    intent = getattr(session, "prompt_intent", PromptIntent())
+    expansion_specs: list[tuple[QuerySpec, PromptIntent, int]] = []
+    expansion_specs.append((clone_spec(session.spec), intent, 700))
+
+    wider_intent = PromptIntent(**vars(intent))
+    wider_intent.exploration_weight = min(0.96, float(intent.exploration_weight) + 0.12)
+    wider_intent.novelty_target = min(0.96, float(intent.novelty_target) + 0.12)
+    wider_intent.direct_match_weight = max(0.22, float(intent.direct_match_weight) - 0.08)
+    expansion_specs.append((clone_spec(session.spec), wider_intent, 900))
+
+    if session.spec.genres:
+        relaxed_genres = clone_spec(session.spec)
+        relaxed_genres.genres = list(session.spec.genres[:1])
+        relaxed_genres.spotify_search_queries = relaxed_genres.to_spotify_search_queries()
+        expansion_specs.append((relaxed_genres, wider_intent, 1100))
+
+    if session.spec.constraints:
+        relaxed_constraints = clone_spec(session.spec)
+        relaxed_constraints.constraints = {}
+        relaxed_constraints.spotify_search_queries = relaxed_constraints.to_spotify_search_queries()
+        expansion_specs.append((relaxed_constraints, wider_intent, 1200))
+
+    if session.spec.genres or session.spec.constraints:
+        broad_spec = clone_spec(session.spec)
+        broad_spec.genres = []
+        broad_spec.constraints = {}
+        broad_spec.spotify_search_queries = broad_spec.to_spotify_search_queries()
+        expansion_specs.append((broad_spec, wider_intent, 1400))
+
+    expanded = False
+    base_count = len(current_df)
+    for candidate_spec, candidate_intent, target_size in expansion_specs:
+        extra_df = fetch_spotify_song_pool(token, candidate_spec, candidate_intent, n_target=target_size)
+        merged_df = _combined_pool_df(session, extra_df)
+        if merged_df.empty or len(merged_df) <= base_count:
+            continue
+        new_pool = SongPool.from_songs(merged_df)
+        new_pool.mark_used_track_ids(set(st.session_state.get("seen_track_ids", set())))
+        new_pool.mark_used_track_signatures(set(st.session_state.get("seen_track_signatures", set())))
+        new_pool.set_external_bias(
+            catalog_preference_scores(
+                merged_df,
+                current_taste_profile(),
+                candidate_spec,
+                candidate_intent,
+            ).to_numpy(dtype=float)
+        )
+        session.pool = new_pool
+        session.spec = candidate_spec
+        session.prompt_intent = candidate_intent
+        expanded = True
+        break
+    return expanded
 
 
 def add_chat_message(role: str, content: str) -> None:
@@ -850,6 +1505,13 @@ def add_chat_message(role: str, content: str) -> None:
 def compose_assistant_message(*sections: str | None) -> str:
     cleaned = [section.strip() for section in sections if section and section.strip()]
     return "\n\n".join(cleaned)
+
+
+def plain_speech_text(markdown_text: str) -> str:
+    text = re.sub(r"\*\*(.*?)\*\*", r"\1", markdown_text or "")
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 def humanize_spotify_note(note: str | None) -> str | None:
@@ -877,28 +1539,33 @@ def render_message_html(content: str) -> str:
 
 
 def summarize_spec(spec: QuerySpec, session: DJSession) -> str:
-    descriptors: list[str] = []
-    if spec.seed_artists:
-        descriptors.append(f"around {', '.join(spec.seed_artists[:2])}")
-    if spec.seed_track:
-        descriptors.append(f"borrowing some of the feel of {spec.seed_track}")
-    if spec.moods:
-        descriptors.append(f"in a {', '.join(spec.moods[:2])} pocket")
-    elif spec.genres:
-        descriptors.append(f"in a {', '.join(spec.genres[:2])} lane")
+    song = session._current_song
+    if song is None:
+        return "**Now spinning:** I’m lining up the set and opening a lane that fits your taste."
 
-    if descriptors:
-        lines = [f"**Set direction:** I'm starting {', '.join(descriptors)}."]
-    else:
-        lines = ["**Set direction:** I'm keeping this open and feeling for the best entry point."]
-    if session._current_song is not None:
-        lines.append(
-            f"**Starting with:** {session._current_song.track_name} by {session._current_song.artists}"
-        )
+    intent = getattr(session, "prompt_intent", PromptIntent())
+    tone_bits: list[str] = []
+    if intent.seed_artists:
+        tone_bits.append(f"around {', '.join(intent.seed_artists[:2])}")
+    if intent.activity_context:
+        tone_bits.append(", ".join(intent.activity_context[:1]))
+    if intent.moods:
+        tone_bits.append(", ".join(intent.moods[:2]))
+    elif intent.genres:
+        tone_bits.append(", ".join(intent.genres[:2]))
+
+    familiarity = "fresh cuts" if not song.is_saved and not song.is_top_track else "a familiar anchor"
+    lane = ", ".join(tone_bits) if tone_bits else "your lane"
+    first_line = f"**Now spinning:** {song.track_name} by {song.artists}."
+    second_line = f"**What I’m queuing:** {familiarity} sitting in {lane}, with enough overlap to feel right without just replaying your library."
+    if intent.exploration_weight >= 0.72:
+        second_line += " I’m leaning harder into discovery on this run."
     if session.last_recommendation_score is not None:
-        lines.append(f"**Read on the room:** {match_label(session.last_recommendation_score)}")
-    lines.append("**Talk to me while this plays:** ask for warmer, darker, bigger hooks, less energy, or closer to a different artist.")
-    return "\n\n".join(lines)
+        third_line = f"**Read on the room:** {match_label(session.last_recommendation_score)}."
+    else:
+        third_line = None
+    closing = "**Steer me live:** say things like darker, bigger hooks, more left-field, newer cuts, or closer to a different artist."
+    return "\n\n".join(line for line in (first_line, second_line, third_line, closing) if line)
 
 
 def parse_preference_text(raw: str) -> list[str]:
@@ -907,6 +1574,21 @@ def parse_preference_text(raw: str) -> list[str]:
 
 def current_taste_profile() -> dict[str, Any]:
     return st.session_state["ui_state"]
+
+
+def build_prompt_context() -> dict[str, Any]:
+    session = st.session_state.get("dj_session")
+    context: dict[str, Any] = {
+        "recent_prompts": list(current_taste_profile().get("session_prompt_history", []))[:5],
+    }
+    if session is not None:
+        context["last_moods"] = list(getattr(session.spec, "moods", []) or [])
+        current_song = getattr(session, "_current_song", None)
+        if current_song is not None:
+            context["current_song_name"] = current_song.track_name
+            context["current_song_artists"] = current_song.artists
+            context["current_song_genre"] = current_song.genre
+    return context
 
 
 def normalize_affinity_label(value: str) -> str:
@@ -921,6 +1603,60 @@ def bump_affinity(bucket: dict[str, float], values: list[str], amount: float) ->
         if not key:
             continue
         bucket[key] = bucket.get(key, 0.0) + amount
+
+
+def track_signature_from_payload(track_name: str, artists: str) -> str:
+    return f"{normalize_affinity_label(track_name)}__{normalize_affinity_label(artists)}"
+
+
+def record_recent_example(song, liked: bool, weight: float) -> None:
+    state = current_taste_profile()
+    bucket_name = "recent_positive_examples" if liked else "recent_negative_examples"
+    bucket = list(state.get(bucket_name, []))
+    payload = {
+        "track_id": str(getattr(song, "track_id", "") or ""),
+        "track_name": song.track_name,
+        "artists": song.artists,
+        "weight": float(weight),
+    }
+    signature = track_signature_from_payload(song.track_name, song.artists)
+    deduped = [item for item in bucket if track_signature_from_payload(item.get("track_name", ""), item.get("artists", "")) != signature]
+    deduped.insert(0, payload)
+    state[bucket_name] = deduped[:20]
+
+
+def update_bayesian_feedback_state(song, liked: bool, *, strength: float) -> None:
+    state = current_taste_profile()
+    artists = [artist.strip() for artist in song.artists.split(";") if artist.strip()]
+    genres = [song.genre] if getattr(song, "genre", "") else []
+    update_beta_bucket(state.setdefault("artist_posterior", {}), artists, liked=liked, amount=1.15 * strength)
+    update_beta_bucket(state.setdefault("genre_posterior", {}), genres, liked=liked, amount=0.9 * strength)
+    update_beta_bucket(state.setdefault("track_posterior", {}), [song.track_name], liked=liked, amount=0.75 * strength)
+
+    novelty_like = not bool(getattr(song, "is_saved", False) or getattr(song, "is_top_track", False))
+    novelty_bucket = {"novelty": state.get("novelty_posterior", {"alpha": 6.5, "beta": 3.5})}
+    update_beta_bucket(
+        novelty_bucket,
+        ["novelty"],
+        liked=liked if novelty_like else not liked,
+        amount=0.55 * strength,
+        decay=0.998,
+    )
+    state["novelty_posterior"] = novelty_bucket["novelty"]
+
+    popularity_bucket = {"mainstream": state.get("popularity_posterior", {"alpha": 5.8, "beta": 4.2})}
+    mainstream_like = int(getattr(song, "popularity", 50) or 50) >= 60
+    update_beta_bucket(
+        popularity_bucket,
+        ["mainstream"],
+        liked=liked if mainstream_like else not liked,
+        amount=0.40 * strength,
+        decay=0.998,
+    )
+    state["popularity_posterior"] = popularity_bucket["mainstream"]
+
+    record_recent_example(song, liked=liked, weight=strength)
+    save_ui_state(state)
 
 
 def explicit_prompt_moods(prompt: str) -> list[str]:
@@ -1006,7 +1742,14 @@ def enrich_spec_from_prompt(prompt: str, spec: QuerySpec) -> QuerySpec:
     enriched = clone_spec(spec)
     artist_mentions = prompt_artist_candidates(prompt)
     if artist_mentions:
-        combined_artists = list(dict.fromkeys(artist_mentions + enriched.seed_artists))
+        combined_artists: list[str] = []
+        seen_artists: set[str] = set()
+        for artist in artist_mentions + enriched.seed_artists:
+            key = normalize_artist_name(artist)
+            if not key or key in seen_artists:
+                continue
+            seen_artists.add(key)
+            combined_artists.append(artist)
         enriched.seed_artists = combined_artists[:3]
 
     explicit_moods = explicit_prompt_moods(prompt)
@@ -1040,12 +1783,39 @@ def infer_preferences_from_message(message: str, spec: QuerySpec) -> None:
 
 def infer_preferences_from_song(song, played: bool) -> None:
     state = current_taste_profile()
-    amount = 1.4 if played else -0.45
+    amount = 1.2 if played else -0.35
     artists = [artist.strip() for artist in song.artists.split(";") if artist.strip()]
     bump_affinity(state.setdefault("artist_affinity", {}), artists, amount)
     bump_affinity(state.setdefault("genre_affinity", {}), [song.genre], amount)
     bump_affinity(state.setdefault("track_affinity", {}), [song.track_name], amount * 0.8)
+    update_bayesian_feedback_state(song, liked=played, strength=1.5 if played else 1.1)
     save_ui_state(state)
+
+
+def current_feedback_for_song(session: DJSession, song) -> str | None:
+    if session is None or song is None:
+        return None
+    current_song = getattr(session, "_current_song", None)
+    if current_song is None:
+        return None
+    current_track_id = str(getattr(current_song, "track_id", "") or "")
+    song_track_id = str(getattr(song, "track_id", "") or "")
+    if current_track_id and song_track_id and current_track_id == song_track_id:
+        return session.current_feedback_action()
+    current_sig = track_signature_from_payload(current_song.track_name, current_song.artists)
+    song_sig = track_signature_from_payload(song.track_name, song.artists)
+    if current_sig == song_sig:
+        return session.current_feedback_action()
+    return None
+
+
+def session_feedback_history(session: DJSession) -> list[tuple[object, str]]:
+    history = list(zip(session.playlist, session.actions))
+    current_song = getattr(session, "_current_song", None)
+    current_action = session.current_feedback_action() if session is not None else None
+    if current_song is not None and current_action in {"play", "skip"}:
+        history.append((current_song, current_action))
+    return history
 
 
 def add_song_to_liked(song) -> None:
@@ -1074,27 +1844,22 @@ def mark_spotify_track_saved(song) -> None:
 
 
 def apply_positive_feedback(session: DJSession, song, source: str) -> None:
-    st.session_state["playback_song"] = serialize_song(song)
-    st.session_state["playback_scored"] = True
-    st.session_state["showing_back_song"] = False
-    deltas = session.record_feedback(True)
+    deltas = session.apply_feedback_to_current(True)
     top_shift = max(deltas.items(), key=lambda item: abs(item[1]))
     infer_preferences_from_song(song, played=True)
     add_song_to_liked(song)
-    ensure_current_song(session)
-    maybe_trigger_dj_interlude()
+    refresh_session_external_bias(session)
     st.session_state["last_feedback"] = f"{source} Largest posterior move: {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} {top_shift[1]:+.3f}."
-    st.session_state["latest_model_update"] = f"{source.rstrip('.')} The posterior moved most on {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
+    st.session_state["latest_model_update"] = f"{source.rstrip('.')} Future recommendations now lean more toward {song.track_name} by {song.artists}, with the biggest posterior move on {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
 
 
 def apply_negative_feedback(session: DJSession, song, source: str) -> None:
-    deltas = session.record_feedback(False)
+    deltas = session.apply_feedback_to_current(False)
     top_shift = max(deltas.items(), key=lambda item: abs(item[1]))
     infer_preferences_from_song(song, played=False)
-    ensure_current_song(session)
-    maybe_trigger_dj_interlude()
+    refresh_session_external_bias(session)
     st.session_state["last_feedback"] = f"{source} Largest posterior move: {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} {top_shift[1]:+.3f}."
-    st.session_state["latest_model_update"] = f"{source.rstrip('.')} The posterior pushed away most from {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
+    st.session_state["latest_model_update"] = f"{source.rstrip('.')} Future recommendations now move away from this lane, with the biggest posterior move on {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
 
 
 def maybe_sync_spotify_saved_feedback(session: DJSession, song) -> bool:
@@ -1146,8 +1911,10 @@ def apply_pending_reaction_if_ready(session: DJSession, song) -> bool:
         deltas = session.record_feedback(True)
         infer_preferences_from_song(song, played=True)
         add_song_to_liked(song)
-        ensure_current_song(session)
-        maybe_trigger_dj_interlude()
+        refresh_session_external_bias(session)
+        mark_song_completed(song)
+        if not maybe_trigger_dj_interlude():
+            ensure_current_song(session)
         top_shift = max(deltas.items(), key=lambda item: abs(item[1]))
         st.session_state["last_feedback"] = f"{source} Largest posterior move: {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} {top_shift[1]:+.3f}."
         st.session_state["latest_model_update"] = f"{source.rstrip('.')} The posterior moved most on {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
@@ -1155,8 +1922,10 @@ def apply_pending_reaction_if_ready(session: DJSession, song) -> bool:
 
     deltas = session.record_feedback(False)
     infer_preferences_from_song(song, played=False)
-    ensure_current_song(session)
-    maybe_trigger_dj_interlude()
+    refresh_session_external_bias(session)
+    mark_song_completed(song)
+    if not maybe_trigger_dj_interlude():
+        ensure_current_song(session)
     top_shift = max(deltas.items(), key=lambda item: abs(item[1]))
     st.session_state["last_feedback"] = f"{source} Largest posterior move: {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} {top_shift[1]:+.3f}."
     st.session_state["latest_model_update"] = f"{source.rstrip('.')} The posterior pushed away most from {AUDIO_FEATURE_LABELS.get(top_shift[0], top_shift[0].title())} ({top_shift[1]:+.3f})."
@@ -1169,9 +1938,18 @@ def serialize_song(song) -> dict[str, Any]:
         "track_id": song.track_id,
         "track_name": song.track_name,
         "artists": song.artists,
+        "artist_ids": getattr(song, "artist_ids", ""),
         "album_name": song.album_name,
         "genre": song.genre,
         "popularity": song.popularity,
+        "artist_popularity": getattr(song, "artist_popularity", 0.0),
+        "release_year": getattr(song, "release_year", 0),
+        "source_type": getattr(song, "source_type", ""),
+        "prompt_score": getattr(song, "prompt_score", 0.0),
+        "novelty_score": getattr(song, "novelty_score", 0.5),
+        "is_saved": bool(getattr(song, "is_saved", False)),
+        "is_recent": bool(getattr(song, "is_recent", False)),
+        "is_top_track": bool(getattr(song, "is_top_track", False)),
         "features": dict(song.features),
         "raw_tempo": song.raw_tempo,
         "raw_loudness": song.raw_loudness,
@@ -1195,57 +1973,65 @@ def prompt_has_clear_direction(spec: QuerySpec | None) -> bool:
     return bool(spec.genres or spec.moods or spec.constraints or spec.seed_artists or spec.seed_track)
 
 
-def catalog_preference_scores(catalog: pd.DataFrame, profile: dict[str, Any], spec: QuerySpec | None = None) -> pd.Series:
+def catalog_preference_scores(
+    catalog: pd.DataFrame,
+    profile: dict[str, Any],
+    spec: QuerySpec | None = None,
+    intent: PromptIntent | None = None,
+) -> pd.Series:
     if catalog.empty:
         return pd.Series(dtype=float)
+    prompt_terms: list[str] = []
+    intent = intent or PromptIntent()
+    if spec is not None:
+        prompt_terms.extend(spec.genres)
+        prompt_terms.extend(spec.moods)
+        prompt_terms.extend(spec.seed_artists)
+        if spec.seed_track:
+            prompt_terms.append(spec.seed_track)
+    prompt_terms.extend(intent.semantic_terms)
+
+    score_frame = discovery_score_frame(
+        catalog,
+        profile,
+        prompt_terms,
+        AUDIO_FEATURES,
+        weights=DEFAULT_DISCOVERY_WEIGHTS,
+    )
+    if score_frame.empty:
+        return pd.Series(0.0, index=catalog.index, dtype=float)
+
+    artist_col = catalog["artists"].fillna("")
+    genre_col = catalog["track_genre"].fillna("").str.lower()
+    score = score_frame["discovery_score"].copy()
 
     directed_prompt = prompt_has_clear_direction(spec)
-    artist_scale = 1.15 if directed_prompt else 1.6
-    track_scale = 0.95 if directed_prompt else 1.25
-    genre_scale = 0.28 if directed_prompt else 1.15
-    popularity_scale = 2.0 if directed_prompt else 1.6
-
-    score = pd.Series(0.0, index=catalog.index, dtype=float)
-    artist_col = catalog["artists"].fillna("")
-    track_col = catalog["track_name"].fillna("")
-    genre_col = catalog["track_genre"].fillna("").str.lower()
-    popularity_rank = catalog["popularity"].rank(method="average", pct=True).astype(float)
-
-    top_artists = sorted(profile.get("artist_affinity", {}).items(), key=lambda item: item[1], reverse=True)[:12]
-    for artist, weight in top_artists:
-        if weight <= 0:
-            continue
-        score += artist_col.str.contains(re.escape(artist), case=False, na=False).astype(float) * min(weight, 5.0) * artist_scale
-
-    top_tracks = sorted(profile.get("track_affinity", {}).items(), key=lambda item: item[1], reverse=True)[:12]
-    for track, weight in top_tracks:
-        if weight <= 0:
-            continue
-        score += track_col.str.contains(re.escape(track), case=False, na=False).astype(float) * min(weight, 4.0) * track_scale
-
-    top_genres = sorted(profile.get("genre_affinity", {}).items(), key=lambda item: item[1], reverse=True)[:10]
-    for genre, weight in top_genres:
-        if weight <= 0:
-            continue
-        score += genre_col.str.contains(re.escape(genre), case=False, na=False).astype(float) * min(weight, 4.0) * genre_scale
-
-    for liked in profile.get("liked_songs", [])[:24]:
-        if liked.get("track_name"):
-            score += track_col.str.contains(re.escape(liked["track_name"]), case=False, na=False).astype(float) * (1.8 if directed_prompt else 2.2)
-        if liked.get("artists"):
-            score += artist_col.str.contains(re.escape(liked["artists"]), case=False, na=False).astype(float) * (1.6 if directed_prompt else 2.0)
-        if liked.get("genre"):
-            score += genre_col.str.contains(re.escape(normalize_affinity_label(liked["genre"])), case=False, na=False).astype(float) * (0.4 if directed_prompt else 1.2)
+    if directed_prompt and spec is not None:
+        if spec.seed_artists:
+            artist_bonus = pd.Series(0.0, index=catalog.index, dtype=float)
+            for artist in spec.seed_artists[:3]:
+                artist_bonus += artist_col.str.contains(re.escape(artist), case=False, na=False).astype(float) * 0.18
+            score += artist_bonus
+        if spec.genres:
+            genre_bonus = pd.Series(0.0, index=catalog.index, dtype=float)
+            for genre in spec.genres[:4]:
+                genre_bonus += genre_col.str.contains(re.escape(normalize_affinity_label(genre)), case=False, na=False).astype(float) * 0.10
+            score += genre_bonus
 
     us_genre_bonus = pd.Series(0.0, index=catalog.index, dtype=float)
     for token in US_HIT_GENRE_TOKENS:
-        us_genre_bonus += genre_col.str.contains(re.escape(token), case=False, na=False).astype(float) * 0.18
+        us_genre_bonus += genre_col.str.contains(re.escape(token), case=False, na=False).astype(float) * 0.10
 
     world_penalty = pd.Series(0.0, index=catalog.index, dtype=float)
     for token in DEPRIORITIZED_WORLD_GENRE_TOKENS:
-        world_penalty += genre_col.str.contains(re.escape(token), case=False, na=False).astype(float) * 0.16
+        world_penalty += genre_col.str.contains(re.escape(token), case=False, na=False).astype(float) * 0.12
 
-    score += popularity_scale * popularity_rank
+    if intent.excluded_artists:
+        excluded_penalty = pd.Series(0.0, index=catalog.index, dtype=float)
+        for artist in intent.excluded_artists[:3]:
+            excluded_penalty += artist_col.str.contains(re.escape(artist), case=False, na=False).astype(float) * 0.5
+        score -= excluded_penalty
+
     score += us_genre_bonus
     score -= world_penalty
     return score
@@ -1311,12 +2097,12 @@ def blend_constraint_ranges(
 
 def taste_blend_strength(spec: QuerySpec) -> float:
     if spec.genres:
-        return 0.14
+        return 0.04
     if spec.moods or spec.constraints:
-        return 0.18
+        return 0.06
     if spec.seed_artists or spec.seed_track:
-        return 0.24
-    return 0.34
+        return 0.09
+    return 0.14
 
 
 def apply_taste_profile(spec: QuerySpec, catalog: pd.DataFrame) -> tuple[QuerySpec, str | None]:
@@ -1339,6 +2125,22 @@ def apply_taste_profile(spec: QuerySpec, catalog: pd.DataFrame) -> tuple[QuerySp
     blend_note = "lightly blended" if prompt_has_clear_direction(spec) else "blended"
     note = f"I {blend_note} your listening history from **{matched_count} matched tracks** ({'; '.join(parts) or 'general listening history'})."
     return updated, note
+
+
+def refresh_session_external_bias(session: DJSession) -> None:
+    if session is None or getattr(session, "pool", None) is None:
+        return
+    catalog = getattr(session.pool, "_df", None)
+    if catalog is None or len(catalog) == 0:
+        return
+    session.pool.set_external_bias(
+        catalog_preference_scores(
+            catalog,
+            current_taste_profile(),
+            session.spec,
+            getattr(session, "prompt_intent", None),
+        ).to_numpy(dtype=float)
+    )
 
 
 @st.cache_data(ttl=3000, show_spinner=False)
@@ -1674,8 +2476,8 @@ def sync_spotify_user_preferences(force: bool = False) -> str | None:
     short_tracks = spotify_api_get("https://api.spotify.com/v1/me/top/tracks", token, {"limit": "15", "time_range": "short_term"})
     medium_tracks = spotify_api_get("https://api.spotify.com/v1/me/top/tracks", token, {"limit": "20", "time_range": "medium_term"})
     long_tracks = spotify_api_get("https://api.spotify.com/v1/me/top/tracks", token, {"limit": "20", "time_range": "long_term"})
-    saved_tracks = spotify_paginated_items("https://api.spotify.com/v1/me/tracks", token, {"limit": "50"}, pages=2)
-    recent_tracks = spotify_paginated_items("https://api.spotify.com/v1/me/player/recently-played", token, {"limit": "50"}, pages=1)
+    saved_tracks = spotify_paginated_items("https://api.spotify.com/v1/me/tracks", token, {"limit": "50"}, pages=10)
+    recent_tracks = spotify_paginated_items("https://api.spotify.com/v1/me/player/recently-played", token, {"limit": "50"}, pages=3)
 
     if not any((short_artists, medium_artists, long_artists, short_tracks, medium_tracks, long_tracks, saved_tracks, recent_tracks)):
         return None
@@ -1685,6 +2487,8 @@ def sync_spotify_user_preferences(force: bool = False) -> str | None:
     track_weights: list[tuple[str, float]] = []
     liked_payloads: list[dict[str, Any]] = []
     saved_track_ids: set[str] = set()
+    top_track_ids: set[str] = set()
+    recent_track_ids: set[str] = set()
     track_payloads: list[tuple[dict[str, Any], float]] = []
 
     def ingest_artists(payload: dict[str, Any] | None, artist_boost: float, genre_boost: float) -> None:
@@ -1698,7 +2502,8 @@ def sync_spotify_user_preferences(force: bool = False) -> str | None:
     def ingest_track_item(track: dict[str, Any], boost: float, liked: bool) -> None:
         track_id = track.get("id", "")
         if track_id:
-            saved_track_ids.add(track_id)
+            if liked:
+                top_track_ids.add(track_id)
         name = track.get("name")
         if name:
             track_weights.append((name, boost))
@@ -1719,81 +2524,100 @@ def sync_spotify_user_preferences(force: bool = False) -> str | None:
             for artist_name in artist_names:
                 artist_weights.append((artist_name, 1.4))
 
-    ingest_artists(short_artists, artist_boost=3.8, genre_boost=2.8)
-    ingest_artists(medium_artists, artist_boost=3.0, genre_boost=2.2)
-    ingest_artists(long_artists, artist_boost=2.5, genre_boost=1.9)
+    ingest_artists(short_artists, artist_boost=2.1, genre_boost=1.4)
+    ingest_artists(medium_artists, artist_boost=1.6, genre_boost=1.1)
+    ingest_artists(long_artists, artist_boost=1.2, genre_boost=0.9)
 
-    for payload, boost in ((short_tracks, 3.6), (medium_tracks, 2.8), (long_tracks, 2.3)):
+    for payload, boost in ((short_tracks, 1.9), (medium_tracks, 1.5), (long_tracks, 1.2)):
         for track in (payload or {}).get("items", []) or []:
             ingest_track_item(track, boost=boost, liked=True)
 
     for item in saved_tracks:
         track = item.get("track") or {}
         if isinstance(track, dict):
-            ingest_track_item(track, boost=2.9, liked=True)
+            track_id = str(track.get("id", "") or "")
+            if track_id:
+                saved_track_ids.add(track_id)
+            ingest_track_item(track, boost=1.1, liked=True)
 
     for item in recent_tracks:
         track = item.get("track") or {}
         if isinstance(track, dict):
-            ingest_track_item(track, boost=1.4, liked=False)
+            track_id = str(track.get("id", "") or "")
+            if track_id:
+                recent_track_ids.add(track_id)
+            ingest_track_item(track, boost=0.8, liked=False)
 
     if not genre_weights:
-        catalog = load_catalog()
-        catalog_with_id = catalog.assign(track_id_str=catalog["track_id"].fillna("").astype(str))
-        genre_col = catalog_with_id["track_genre"].fillna("").astype(str)
-        name_col = catalog_with_id["track_name"].fillna("").astype(str).str.lower()
-        artist_col = catalog_with_id["artists"].fillna("").astype(str).str.lower()
+        # Collect unique artist IDs from track payloads and fetch their genres via Spotify API
+        artist_id_to_boost: dict[str, float] = {}
+        track_artist_map: dict[str, list[str]] = {}  # track_id -> [artist_id, ...]
         for track, boost in track_payloads:
             track_id = str(track.get("id", "") or "")
-            matched_rows = catalog_with_id.iloc[0:0]
-            if track_id:
-                matched_rows = catalog_with_id.loc[catalog_with_id["track_id_str"] == track_id]
-            if matched_rows.empty:
-                track_name = str(track.get("name", "") or "").strip().lower()
-                artist_names = [str(artist.get("name", "")).strip().lower() for artist in track.get("artists", []) if artist.get("name")]
-                if track_name:
-                    matched_rows = catalog_with_id.loc[name_col == track_name]
-                if not matched_rows.empty and artist_names:
-                    artist_pattern = "|".join(re.escape(name) for name in artist_names[:2] if name)
-                    if artist_pattern:
-                        matched_rows = matched_rows.loc[
-                            matched_rows["artists"].fillna("").astype(str).str.lower().str.contains(artist_pattern, regex=True, na=False)
-                        ]
-            if matched_rows.empty:
-                continue
-            top_genres = (
-                matched_rows.assign(_genre=genre_col.loc[matched_rows.index])
-                .groupby("_genre")["popularity"]
-                .mean()
-                .sort_values(ascending=False)
-                .head(2)
-                .index
-                .tolist()
+            t_artist_ids = []
+            for a in track.get("artists") or []:
+                aid = str(a.get("id", "") or "")
+                if aid:
+                    t_artist_ids.append(aid)
+                    if aid not in artist_id_to_boost or artist_id_to_boost[aid] < boost:
+                        artist_id_to_boost[aid] = boost
+            if track_id and t_artist_ids:
+                track_artist_map[track_id] = t_artist_ids
+
+        artist_genres: dict[str, list[str]] = {}  # artist_id -> genres
+        all_artist_ids = list(artist_id_to_boost.keys())
+        for chunk_start in range(0, len(all_artist_ids), 50):
+            chunk = all_artist_ids[chunk_start: chunk_start + 50]
+            resp = spotify_api_get(
+                "https://api.spotify.com/v1/artists",
+                token,
+                {"ids": ",".join(chunk)},
             )
-            for genre in top_genres:
-                if genre:
-                    genre_weights.append((str(genre), boost * 0.9))
-            if top_genres and track_id:
+            for artist_obj in (resp or {}).get("artists") or []:
+                if not isinstance(artist_obj, dict):
+                    continue
+                aid = str(artist_obj.get("id", "") or "")
+                genres = [str(g) for g in (artist_obj.get("genres") or []) if g]
+                if aid and genres:
+                    artist_genres[aid] = genres
+
+        for track, boost in track_payloads:
+            track_id = str(track.get("id", "") or "")
+            t_artist_ids = track_artist_map.get(track_id, [])
+            track_genres: list[str] = []
+            for aid in t_artist_ids:
+                track_genres.extend(artist_genres.get(aid, []))
+            for genre in track_genres[:2]:
+                genre_weights.append((genre, boost * 0.9))
+            if track_genres and track_id:
                 for liked in liked_payloads:
                     if liked.get("track_id") == track_id and not liked.get("genre"):
-                        liked["genre"] = str(top_genres[0])
+                        liked["genre"] = track_genres[0]
 
     for artist_name, weight in artist_weights:
         bump_affinity(state.setdefault("artist_affinity", {}), [artist_name], weight)
+        update_beta_bucket(state.setdefault("artist_posterior", {}), [artist_name], liked=True, amount=max(0.12, weight * 0.12), decay=0.999)
     for genre_name, weight in genre_weights:
         bump_affinity(state.setdefault("genre_affinity", {}), [genre_name], weight)
+        update_beta_bucket(state.setdefault("genre_posterior", {}), [genre_name], liked=True, amount=max(0.10, weight * 0.10), decay=0.999)
     for track_name, weight in track_weights:
         bump_affinity(state.setdefault("track_affinity", {}), [track_name], weight)
+        update_beta_bucket(state.setdefault("track_posterior", {}), [track_name], liked=True, amount=max(0.06, weight * 0.06), decay=0.999)
 
     existing = state.setdefault("liked_songs", [])
     state["liked_songs"] = merge_liked_payloads(existing, liked_payloads, limit=48)
     state["spotify_saved_track_ids"] = sorted(set(state.get("spotify_saved_track_ids", [])) | saved_track_ids)
+    state["spotify_top_track_ids"] = sorted(set(state.get("spotify_top_track_ids", [])) | top_track_ids)
+    state["spotify_recent_track_ids"] = sorted(set(state.get("spotify_recent_track_ids", [])) | recent_track_ids)
     state["spotify_user_seeded"] = True
     state["spotify_user_summary"] = {
         "artists": top_affinity_items(state.get("artist_affinity", {}), limit=5),
         "genres": top_affinity_items(state.get("genre_affinity", {}), limit=5),
         "tracks": top_affinity_items(state.get("track_affinity", {}), limit=5),
     }
+    novelty_bucket = {"novelty": state.get("novelty_posterior", {"alpha": 6.5, "beta": 3.5})}
+    update_beta_bucket(novelty_bucket, ["novelty"], liked=True, amount=0.55, decay=0.999)
+    state["novelty_posterior"] = novelty_bucket["novelty"]
     save_ui_state(state)
 
     artists = ", ".join(state["spotify_user_summary"]["artists"][:3]) or "top artists"
@@ -1954,10 +2778,25 @@ def liked_song_rail_items() -> list[dict[str, str]]:
 def start_session(prompt: str, playlist_length: int) -> None:
     spotify_note = sync_spotify_user_preferences()
     spec = enrich_spec_from_prompt(prompt, get_parser().parse(prompt))
+    intent = parse_prompt_intent(prompt, spec, build_prompt_context())
     infer_preferences_from_message(prompt, spec)
-    spec, taste_note = apply_taste_profile(spec, load_catalog())
+    state = current_taste_profile()
+    prompt_history = list(state.get("session_prompt_history", []))
+    prompt_history.insert(0, prompt)
+    state["session_prompt_history"] = prompt_history[:24]
+    save_ui_state(state)
     st.session_state["seen_track_ids"] = set()
-    session = build_session_from_spec(spec, playlist_length, excluded_track_ids=set())
+    st.session_state["seen_track_signatures"] = set()
+    st.session_state["completed_song_count"] = 0
+    st.session_state["completed_song_keys"] = set()
+    session, taste_note = build_session_from_spec(
+        spec,
+        playlist_length,
+        prompt_intent=intent,
+        excluded_track_ids=set(),
+        excluded_track_signatures=set(),
+    )
+    spec = session.spec  # use blended spec from build_session_from_spec
     st.session_state["dj_session"] = session
     st.session_state["session_finished"] = session._current_song is None
     st.session_state["last_feedback"] = None
@@ -1967,6 +2806,7 @@ def start_session(prompt: str, playlist_length: int) -> None:
     st.session_state["playback_scored"] = False
     st.session_state["back_song"] = None
     st.session_state["showing_back_song"] = False
+    st.session_state["welcome_greeted"] = True
     add_chat_message("user", prompt)
     response = compose_assistant_message(
         f"**You asked for:** {prompt}",
@@ -1975,6 +2815,7 @@ def start_session(prompt: str, playlist_length: int) -> None:
         summarize_spec(spec, session),
     )
     add_chat_message("assistant", response)
+    schedule_speech(plain_speech_text(summarize_spec(spec, session)), f"query-{abs(hash((prompt, session._current_song.track_id if session._current_song is not None else ''))) }")
 
 
 def chips(items: list[str], tone: str = "") -> str:
@@ -2072,16 +2913,24 @@ def apply_refinement(message: str) -> None:
     previous_spec = clone_spec(current_session.spec)
     refinement = enrich_spec_from_prompt(message, get_parser().parse(message))
     infer_preferences_from_message(message, refinement)
+    state = current_taste_profile()
+    prompt_history = list(state.get("session_prompt_history", []))
+    prompt_history.insert(0, message)
+    state["session_prompt_history"] = prompt_history[:24]
+    save_ui_state(state)
     spotify_note = sync_spotify_user_preferences()
     merged_spec = merge_specs(previous_spec, refinement, message)
-    merged_spec, taste_note = apply_taste_profile(merged_spec, load_catalog())
-    prior_feedback = list(zip(current_session.playlist, current_session.actions))
-    rebuilt_session = build_session_from_spec(
+    refinement_intent = parse_prompt_intent(message, merged_spec, build_prompt_context())
+    prior_feedback = session_feedback_history(current_session)
+    rebuilt_session, taste_note = build_session_from_spec(
         merged_spec,
         current_session.playlist_length,
+        prompt_intent=refinement_intent,
         prior_feedback=prior_feedback,
         excluded_track_ids=set(st.session_state.get("seen_track_ids", set())),
+        excluded_track_signatures=set(st.session_state.get("seen_track_signatures", set())),
     )
+    merged_spec = rebuilt_session.spec  # use blended spec
 
     if getattr(rebuilt_session, "initial_candidate_count", rebuilt_session.pool.n_available) == 0:
         add_chat_message("user", message)
@@ -2112,6 +2961,7 @@ def apply_refinement(message: str) -> None:
         summarize_spec(merged_spec, rebuilt_session),
     )
     add_chat_message("assistant", assistant_reply)
+    schedule_speech(plain_speech_text(summarize_spec(merged_spec, rebuilt_session)), f"refine-{abs(hash((message, rebuilt_session._current_song.track_id if rebuilt_session._current_song is not None else '')))}")
 
 
 GENRE_TRANSITIONS = {
@@ -2425,18 +3275,34 @@ def schedule_speech(text: str, key: str) -> None:
     st.session_state["speech_payload"] = {"text": text, "key": key}
 
 
-def maybe_trigger_dj_interlude() -> None:
-    session = st.session_state["dj_session"]
-    rounds = len(session.playlist)
-    if rounds == 0 or rounds % 4 != 0:
+def ensure_dj_greeting() -> None:
+    if st.session_state.get("welcome_greeted"):
         return
-    if st.session_state.get("last_transition_round") == rounds:
-        return
+    greeting = compose_assistant_message(
+        "**Hey, I'm DJ Bayes.** Good to have you here.",
+        "**Throw me a vibe, an artist, or a moment:** I'll turn it into a live set that feels personal, playful, and easy to steer.",
+        "**House rule:** every three songs, I'll jump in with a fresh little detour to keep the room moving.",
+    )
+    add_chat_message("assistant", greeting)
+    schedule_speech(
+        "Hey now, I'm DJ Bayes. Slide me a vibe, an artist, or a moment, and I'll get the room moving for you.",
+        "welcome-greeting",
+    )
+    st.session_state["latest_model_update"] = "DJ Bayes is live and ready to spin."
+    st.session_state["welcome_greeted"] = True
 
-    prior_feedback = list(zip(session.playlist, session.actions))
-    catalog = load_catalog()
+
+def maybe_trigger_dj_interlude() -> bool:
+    session = st.session_state["dj_session"]
+    completed_songs = int(st.session_state.get("completed_song_count", 0))
+    if completed_songs == 0 or completed_songs % 3 != 0:
+        return False
+    if st.session_state.get("last_transition_round") == completed_songs:
+        return False
+
+    prior_feedback = session_feedback_history(session)
     route_history = st.session_state.get("recent_intervention_routes", [])
-    routes = build_intervention_routes(session.spec, rounds)
+    routes = build_intervention_routes(session.spec, completed_songs)
     if route_history:
         filtered = [route for route in routes if route["name"] not in route_history[-2:]]
         if filtered:
@@ -2446,12 +3312,12 @@ def maybe_trigger_dj_interlude() -> None:
     rebuilt: DJSession | None = None
     for route in routes:
         candidate_spec = route["builder"](session.spec)
-        candidate_spec, _ = apply_taste_profile(candidate_spec, catalog)
-        candidate_session = build_session_from_spec(
+        candidate_session, _ = build_session_from_spec(
             candidate_spec,
             session.playlist_length,
             prior_feedback=prior_feedback,
             excluded_track_ids=set(st.session_state.get("seen_track_ids", set())),
+            excluded_track_signatures=set(st.session_state.get("seen_track_signatures", set())),
         )
         if getattr(candidate_session, "initial_candidate_count", 0) <= 0 or candidate_session._current_song is None:
             continue
@@ -2469,26 +3335,30 @@ def maybe_trigger_dj_interlude() -> None:
         route_history = (route_history + [chosen_route["name"]])[-6:]
         st.session_state["recent_intervention_routes"] = route_history
 
-    st.session_state["last_transition_round"] = rounds
+    st.session_state["last_transition_round"] = completed_songs
+    transition_count = completed_songs
     if chosen_route is not None and rebuilt is not None and rebuilt._current_song is not None:
         message = compose_assistant_message(
             f"**DJ Bayes intervention:** {chosen_route['headline']}",
             f"**Why this route:** {chosen_route['reason']}",
             f"**Next up:** {rebuilt._current_song.track_name} by {rebuilt._current_song.artists}",
         )
-        latest_update = f"Auto-intervention after {rounds} songs: {chosen_route['headline'].replace('**', '')}"
+        latest_update = f"Auto-intervention after {transition_count} songs: {chosen_route['headline'].replace('**', '')}"
         speech_text = str(chosen_route["speech"])
     else:
+        ensure_current_song(session)
         fallback_genre = next_transition_genre(session.spec) or "a new lane"
         message = compose_assistant_message(
             f"**DJ Bayes intervention:** I'm nudging the set toward **{fallback_genre}**.",
             "**Why this route:** I couldn't find a stronger alternate detour with enough songs, so I kept the pivot simple.",
+            f"**Next up:** {session._current_song.track_name} by {session._current_song.artists}" if session._current_song is not None else None,
         )
-        latest_update = f"Auto-intervention after {rounds} songs toward {fallback_genre}."
-        speech_text = f"DJ Bayes here. You've moved through {rounds} songs, so I'm nudging this set toward {fallback_genre} for the next stretch."
+        latest_update = f"Auto-intervention after {transition_count} songs toward {fallback_genre}."
+        speech_text = f"DJ Bayes here. You've moved through {transition_count} songs, so I'm nudging this set toward {fallback_genre} for the next stretch."
     add_chat_message("assistant", message)
     st.session_state["latest_model_update"] = latest_update
-    schedule_speech(speech_text, f"transition-{rounds}")
+    schedule_speech(speech_text, f"transition-{transition_count}")
+    return True
 
 
 def render_voice_interlude() -> None:
@@ -2503,23 +3373,70 @@ def render_voice_interlude() -> None:
         const key = {json.dumps(payload["key"])};
         const storeKey = "dj-bayes-last-spoken";
         const pendingKey = "dj-bayes-pending-speech";
-        if (window.sessionStorage.getItem(storeKey) !== key) {{
-            window.sessionStorage.setItem(storeKey, key);
-            window.sessionStorage.setItem(pendingKey, "1");
-            window.speechSynthesis.cancel();
+        const topWindow = window.parent && window.parent !== window ? window.parent : window;
+        const storage = topWindow.sessionStorage || window.sessionStorage;
+        const synth = topWindow.speechSynthesis || window.speechSynthesis;
+        function pickVoice() {{
+            const voices = synth.getVoices() || [];
+            const englishVoices = voices.filter((voice) => /en[-_]/i.test(voice.lang || ""));
+            const preferred = [
+                /daniel/i,
+                /alex/i,
+                /aaron/i,
+                /fred/i,
+                /reed/i,
+                /david/i,
+                /tom/i,
+                /bruce/i,
+                /male/i
+            ];
+            for (const pattern of preferred) {{
+                const match = englishVoices.find((voice) => pattern.test(`${{voice.name}} ${{voice.voiceURI || ""}}`));
+                if (match) {{
+                    return match;
+                }}
+            }}
+            return englishVoices.find((voice) => /en-us/i.test(voice.lang || "")) || englishVoices[0] || voices[0] || null;
+        }}
+        function speakNow() {{
+            storage.setItem(storeKey, key);
+            storage.setItem(pendingKey, "1");
+            synth.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0;
-            utterance.pitch = 1.02;
+            const selectedVoice = pickVoice();
+            if (selectedVoice) {{
+                utterance.voice = selectedVoice;
+            }}
+            utterance.rate = 0.96;
+            utterance.pitch = 0.84;
+            utterance.volume = 1.0;
             utterance.lang = "en-US";
             utterance.onend = () => {{
-                window.sessionStorage.removeItem(pendingKey);
+                storage.removeItem(pendingKey);
             }};
             utterance.onerror = () => {{
-                window.sessionStorage.removeItem(pendingKey);
+                storage.removeItem(pendingKey);
             }};
-            window.speechSynthesis.speak(utterance);
+            synth.speak(utterance);
+        }}
+        if (storage.getItem(storeKey) !== key) {{
+            const voices = synth.getVoices() || [];
+            if (!voices.length) {{
+                const handleVoicesChanged = () => {{
+                    synth.removeEventListener("voiceschanged", handleVoicesChanged);
+                    speakNow();
+                }};
+                synth.addEventListener("voiceschanged", handleVoicesChanged, {{ once: true }});
+                window.setTimeout(() => {{
+                    if (storage.getItem(storeKey) !== key) {{
+                        speakNow();
+                    }}
+                }}, 350);
+            }} else {{
+                speakNow();
+            }}
         }} else {{
-            window.sessionStorage.removeItem(pendingKey);
+            storage.removeItem(pendingKey);
         }}
         </script>
         """,
@@ -2607,13 +3524,15 @@ def related_reference_tracks(song, limit: int = 2) -> list[str]:
 def recommendation_reason_text(song, score: float) -> str:
     references = related_reference_tracks(song, limit=2)
     if score >= 0.82:
-        base = "You would likely keep this in rotation."
+        base = "This sits right in your pocket and still feels like a worthwhile pull."
     elif score >= 0.64:
-        base = "This should land well with your taste."
+        base = "This lines up with your taste while keeping some discovery in the mix."
     elif score >= 0.46:
-        base = "There is a decent chance this clicks for you."
+        base = "This leans exploratory, but there is enough overlap for it to land."
     else:
-        base = "This is a stretch pick, but it still overlaps with parts of your profile."
+        base = "This is a bolder discovery swing, but it still shares DNA with your profile."
+    if not song.is_saved and not song.is_top_track:
+        base += " It is also newer to you than the average pick."
     if references:
         return f"{base} It lines up with tracks you already seem to like such as {', '.join(references)}."
     return base
@@ -2872,6 +3791,17 @@ def render_conversation() -> None:
             """,
             unsafe_allow_html=True,
         )
+    queued_prompt = str(st.session_state.get("queued_prompt", "") or "").strip()
+    if queued_prompt:
+        st.markdown(
+            f"""
+            <div class="chat-bubble user">
+                <div class="chat-role">You</div>
+                <div class="chat-body">{render_message_html(queued_prompt)}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def render_refinement_presets() -> None:
@@ -2957,7 +3887,9 @@ def maybe_handle_auto_next(session: DJSession, song, playback_song) -> bool:
             ensure_current_song(session)
     else:
         session.advance_without_feedback()
-        ensure_current_song(session)
+        mark_song_completed(song)
+        if not maybe_trigger_dj_interlude():
+            ensure_current_song(session)
     st.session_state["last_feedback"] = f"Auto-advanced after {song.track_name} finished."
     st.session_state["session_finished"] = session._current_song is None and session_complete(session)
     return True
@@ -2975,26 +3907,65 @@ def render_playback_area(song, art: dict[str, str | None]) -> None:
                 const audio = document.getElementById("bayes-player");
                 {trigger_auto_next(track_id)}
                 const deferForVoice = {defer_for_voice};
+                const stateKey = "dj-bayes-audio-state";
+                const currentTrackId = {json.dumps(str(track_id))};
+                const topWindow = window.parent && window.parent !== window ? window.parent : window;
+                const storage = topWindow.sessionStorage || window.sessionStorage;
+                const synth = topWindow.speechSynthesis || window.speechSynthesis;
+                function loadState() {{
+                    try {{
+                        return JSON.parse(storage.getItem(stateKey) || "{{}}");
+                    }} catch (err) {{
+                        return {{}};
+                    }}
+                }}
+                function saveState(next) {{
+                    try {{
+                        storage.setItem(stateKey, JSON.stringify(next));
+                    }} catch (err) {{}}
+                }}
                 async function waitForVoice() {{
                     if (!deferForVoice) {{
                         return;
                     }}
                     const pendingKey = "dj-bayes-pending-speech";
-                    while (window.sessionStorage.getItem(pendingKey) === "1" || window.speechSynthesis.speaking) {{
+                    while (storage.getItem(pendingKey) === "1" || synth.speaking) {{
                         await new Promise((resolve) => setTimeout(resolve, 250));
                     }}
                 }}
                 async function startPlayback() {{
+                    const savedState = loadState();
+                    if (savedState.trackId === currentTrackId && Number.isFinite(savedState.position)) {{
+                        try {{
+                            audio.currentTime = Math.max(0, Number(savedState.position) || 0);
+                        }} catch (err) {{}}
+                    }}
                     try {{
                         await waitForVoice();
+                        if (savedState.trackId === currentTrackId && savedState.paused) {{
+                            return;
+                        }}
                         const maybePromise = audio.play();
                         if (maybePromise) {{
                             await maybePromise;
                         }}
                     }} catch (err) {{}}
                 }}
+                function persistAudioState() {{
+                    saveState({{
+                        trackId: currentTrackId,
+                        position: Number(audio.currentTime || 0),
+                        paused: Boolean(audio.paused),
+                    }});
+                }}
+                audio.addEventListener("timeupdate", persistAudioState);
+                audio.addEventListener("pause", persistAudioState);
+                audio.addEventListener("play", persistAudioState);
                 startPlayback();
-                audio.addEventListener("ended", goNext);
+                audio.addEventListener("ended", () => {{
+                    saveState({{ trackId: currentTrackId, position: 0, paused: true }});
+                    goNext();
+                }});
             </script>
         </div>
         """
@@ -3011,12 +3982,29 @@ def render_playback_area(song, art: dict[str, str | None]) -> None:
                 const mountId = "spotify-embed-{embed_track_id}";
                 {trigger_auto_next(track_id)}
                 const deferForVoice = {defer_for_voice};
+                const stateKey = "dj-bayes-spotify-state";
+                const currentTrackId = {json.dumps(str(track_id))};
+                const topWindow = window.parent && window.parent !== window ? window.parent : window;
+                const storage = topWindow.sessionStorage || window.sessionStorage;
+                const synth = topWindow.speechSynthesis || window.speechSynthesis;
+                function loadState() {{
+                    try {{
+                        return JSON.parse(storage.getItem(stateKey) || "{{}}");
+                    }} catch (err) {{
+                        return {{}};
+                    }}
+                }}
+                function saveState(next) {{
+                    try {{
+                        storage.setItem(stateKey, JSON.stringify(next));
+                    }} catch (err) {{}}
+                }}
                 async function waitForVoice() {{
                     if (!deferForVoice) {{
                         return;
                     }}
                     const pendingKey = "dj-bayes-pending-speech";
-                    while (window.sessionStorage.getItem(pendingKey) === "1" || window.speechSynthesis.speaking) {{
+                    while (storage.getItem(pendingKey) === "1" || synth.speaking) {{
                         await new Promise((resolve) => setTimeout(resolve, 250));
                     }}
                 }}
@@ -3031,9 +4019,17 @@ def render_playback_area(song, art: dict[str, str | None]) -> None:
                         uri: "spotify:track:{embed_track_id}"
                     }};
                     const callback = async (EmbedController) => {{
+                        const savedState = loadState();
                         try {{
                             await waitForVoice();
-                            EmbedController.play();
+                            if (savedState.trackId === currentTrackId && Number.isFinite(savedState.position) && typeof EmbedController.seek === "function") {{
+                                try {{
+                                    EmbedController.seek(Number(savedState.position) || 0);
+                                }} catch (err) {{}}
+                            }}
+                            if (!(savedState.trackId === currentTrackId && savedState.paused)) {{
+                                EmbedController.play();
+                            }}
                         }} catch (err) {{}}
                         let autoAdvanced = false;
                         EmbedController.addListener("playback_update", (event) => {{
@@ -3041,10 +4037,16 @@ def render_playback_area(song, art: dict[str, str | None]) -> None:
                             if (!data || autoAdvanced) {{
                                 return;
                             }}
+                            saveState({{
+                                trackId: currentTrackId,
+                                position: Number(data.position || 0),
+                                paused: Boolean(data.isPaused),
+                            }});
                             const duration = Number(data.duration || 0);
                             const position = Number(data.position || 0);
                             if (duration > 0 && position >= duration - 1000) {{
                                 autoAdvanced = true;
+                                saveState({{ trackId: currentTrackId, position: 0, paused: true }});
                                 goNext();
                             }}
                         }});
@@ -3078,8 +4080,6 @@ def render_current_track(session: DJSession) -> None:
     if maybe_handle_auto_next(session, song, playback_song):
         st.rerun()
 
-    if maybe_sync_spotify_saved_feedback(session, song):
-        st.rerun()
     saved_on_spotify = spotify_track_saved(song)
 
     art = song_art(song)
@@ -3133,10 +4133,15 @@ def render_current_track(session: DJSession) -> None:
             tone="info",
         )
     else:
+        current_feedback = current_feedback_for_song(session, song)
         feedback_cols = st.columns(2)
         with feedback_cols[0]:
-            save_disabled = playback_song is not None or st.session_state.get("showing_back_song", False) or saved_on_spotify is True
-            save_label = "Already liked on Spotify" if saved_on_spotify is True else "Like this recommendation?"
+            save_disabled = (
+                playback_song is not None
+                or st.session_state.get("showing_back_song", False)
+                or current_feedback is not None
+            )
+            save_label = "Like this recommendation?"
             if st.button(save_label, width="stretch", type="primary", disabled=save_disabled):
                 clear_pending_reaction()
                 apply_positive_feedback(
@@ -3144,22 +4149,28 @@ def render_current_track(session: DJSession) -> None:
                     song,
                     "Liked this recommendation.",
                 )
-                st.rerun()
         with feedback_cols[1]:
-            dislike_disabled = playback_song is not None or st.session_state.get("showing_back_song", False)
+            dislike_disabled = (
+                playback_song is not None
+                or st.session_state.get("showing_back_song", False)
+                or current_feedback is not None
+            )
             if st.button("Don't like this recommendation", width="stretch", disabled=dislike_disabled):
                 clear_pending_reaction()
                 apply_negative_feedback(session, song, "Didn't like this recommendation.")
-                st.rerun()
 
         if playback_song is not None:
             st.caption("Liked songs stay visible until you move to the next recommendation.")
+        elif current_feedback == "play":
+            st.caption("You liked this recommendation. DJ Bayes already updated the model, and this song will keep playing until you move on.")
+        elif current_feedback == "skip":
+            st.caption("You marked this recommendation as a miss. DJ Bayes already updated the model, and the current song will keep playing until you move on.")
         elif saved_on_spotify is True:
-            st.caption("The Spotify player still lets you save this track in Spotify, and DJ Bayes will learn from that too.")
+            st.caption("This track is already in your Spotify library. You can still like or dislike it here so DJ Bayes learns how it fits this session.")
         elif st.session_state.get("showing_back_song", False):
             st.caption("Back is listen-only. Return to the live stream to keep training the model.")
         else:
-            st.caption("Use these buttons to train DJ Bayes directly. Use the Spotify snippet itself if you also want to save the song on Spotify.")
+            st.caption("Use these buttons to train DJ Bayes directly. Spotify library status is just a prior signal, not the final verdict.")
 
         action_cols = st.columns(2)
         with action_cols[0]:
@@ -3183,8 +4194,10 @@ def render_current_track(session: DJSession) -> None:
                     st.session_state["last_feedback"] = f"Queued the next recommendation after {song.track_name}."
                 else:
                     if not apply_pending_reaction_if_ready(session, song):
+                        mark_song_completed(song)
                         session.advance_without_feedback()
-                        ensure_current_song(session)
+                        if not maybe_trigger_dj_interlude():
+                            ensure_current_song(session)
                         st.session_state["last_feedback"] = f"Queued the next recommendation after {song.track_name}."
                 st.session_state["session_finished"] = session._current_song is None and session_complete(session)
                 st.rerun()
@@ -3304,7 +4317,7 @@ def render_empty_workspace() -> None:
     st.markdown(
         """
         <div class="glass-card">
-            Spotify is connected. Ask for a vibe, scene, or energy level and DJ Bayes will start the stream from your listening history.
+            Spotify is connected and DJ Bayes is on deck. Ask for a vibe, scene, artist, or moment and the stream will start from your listening history.
         </div>
         """,
         unsafe_allow_html=True,
@@ -3349,27 +4362,34 @@ def main() -> None:
         render_spotify_login_gate()
         return
 
+    if st.session_state["dj_session"] is None:
+        ensure_dj_greeting()
+
     session = st.session_state["dj_session"]
     if session is None:
         render_empty_workspace()
+        render_conversation()
     else:
-        if session.pool.n_available == 0 and not session.playlist:
-            st.error("The prompt filtered the catalog down to zero candidates. Broaden the mood or genre description and try again.")
-        else:
-            render_current_track(session)
-            render_conversation()
-            render_posterior_panels(session)
-            render_latest_update()
+        render_current_track(session)
+        render_conversation()
+        render_posterior_panels(session)
+        render_latest_update()
 
     follow_up = st.chat_input("Ask DJ Bayes for a vibe, mood, or scene")
     if follow_up:
+        st.session_state["queued_prompt"] = follow_up
+        st.rerun()
+
+    queued_prompt = str(st.session_state.get("queued_prompt", "") or "").strip()
+    if queued_prompt:
+        st.session_state["queued_prompt"] = ""
         with st.spinner("Updating DJ Bayes..."):
             if st.session_state["dj_session"] is None:
-                start_session(follow_up, st.session_state["playlist_length"])
-            elif message_starts_new_request(follow_up):
-                start_session(follow_up, st.session_state["playlist_length"])
+                start_session(queued_prompt, st.session_state["playlist_length"])
+            elif message_starts_new_request(queued_prompt):
+                start_session(queued_prompt, st.session_state["playlist_length"])
             else:
-                apply_refinement(follow_up)
+                apply_refinement(queued_prompt)
         st.rerun()
 
     render_voice_interlude()

@@ -1,8 +1,11 @@
 matplotlib
-numpy
+numpy<2
 pandas
 plotly
+pyarrow<18
 scikit-learn
 scipy
-sentence-transformers
+sentence-transformers==2.7.0
 streamlit
+torch==2.2.2
+transformers==4.40.2

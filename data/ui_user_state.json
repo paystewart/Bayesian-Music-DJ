@@ -1,298 +1,3735 @@
 {
-  "favorite_artists": [],
-  "favorite_tracks": [],
-  "favorite_genres": [],
-  "liked_songs": [
-    {
-      "track_id": "4xkOaSrkexMciUUogZKVTS",
-      "track_name": "Till I Collapse",
-      "artists": "Eminem;Nate Dogg",
-      "album_name": "The Eminem Show",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "6vFsBXYczYsP0H3lgunZOm",
-      "track_name": "Cloud 9",
-      "artists": "Beach Bunny",
-      "album_name": "Honeymoon",
-      "genre": "indie-pop"
-    },
-    {
-      "track_id": "3vSn1frPgFcRXrjWOfhMLl",
-      "track_name": "Be My Lover",
-      "artists": "La Bouche",
-      "album_name": "Best Of La Bouche feat. Melanie Thornton (feat. Melanie Thornton)",
-      "genre": "german"
-    },
-    {
-      "track_id": "0Fs9cdPDhptWEDJmiCbkEW",
-      "track_name": "She Knows (feat. Amber Coffman & Cults)",
-      "artists": "J. Cole;Cults;Amber Coffman",
-      "album_name": "Born Sinner (Deluxe Version)",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "32OlwWuMpZ6b0aN2RZOeMS",
-      "track_name": "Uptown Funk (feat. Bruno Mars)",
-      "artists": "Mark Ronson;Bruno Mars",
-      "album_name": "Uptown Special",
-      "genre": "dance"
-    },
-    {
-      "track_id": "0e8nrvls4Qqv5Rfa2UhqmO",
-      "track_name": "THATS WHAT I WANT",
-      "artists": "Lil Nas X",
-      "album_name": "MONTERO",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "7iL6o9tox1zgHpKUfh9vuC",
-      "track_name": "In Da Club",
-      "artists": "50 Cent",
-      "album_name": "Get Rich Or Die Tryin'",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "3yfqSUWxFvZELEM4PmlwIR",
-      "track_name": "The Real Slim Shady",
-      "artists": "Eminem",
-      "album_name": "The Marshall Mathers LP",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "4LwU4Vp6od3Sb08CsP99GC",
-      "track_name": "The Next Episode",
-      "artists": "Dr. Dre;Snoop Dogg",
-      "album_name": "2001",
-      "genre": "funk"
-    },
-    {
-      "track_id": "5g9lS8deSIxItFBmZRC4vN",
-      "track_name": "Ambitionz Az A Ridah",
-      "artists": "2Pac",
-      "album_name": "All Eyez On Me",
-      "genre": "funk"
-    },
-    {
-      "track_id": "2ydUT1pFhuLDnouelIv4WH",
-      "track_name": "The Rock Show",
-      "artists": "blink-182",
-      "album_name": "Take Off Your Pants And Jacket",
-      "genre": "punk-rock"
-    },
-    {
-      "track_id": "7KXjTSCq5nL1LoYtL7XAwS",
-      "track_name": "HUMBLE.",
-      "artists": "Kendrick Lamar",
-      "album_name": "DAMN.",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "4cacyP5c3PMlfnyjpg13xW",
-      "track_name": "Betty (Get Money)",
-      "artists": "Yung Gravy",
-      "album_name": "Betty (Get Money)",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "1r8ZCjfrQxoy2wVaBUbpwg",
-      "track_name": "Thousand Miles",
-      "artists": "The Kid LAROI",
-      "album_name": "Thousand Miles",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "0VgkVdmE4gld66l8iyGjgx",
-      "track_name": "Mask Off",
-      "artists": "Future",
-      "album_name": "FUTURE",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "15JINEqzVMv3SvJTAXAKED",
-      "track_name": "Love The Way You Lie",
-      "artists": "Eminem;Rihanna",
-      "album_name": "Recovery",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "27ZZdyTSQWI7Cug2d2PkqV",
-      "track_name": "BILLIE EILISH.",
-      "artists": "Armani White",
-      "album_name": "BILLIE EILISH.",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "4LRPiXqCikLlN15c3yImP7",
-      "track_name": "As It Was",
-      "artists": "Harry Styles",
-      "album_name": "As It Was",
-      "genre": "pop"
-    },
-    {
-      "track_id": "5HCyWlXZPP0y6Gqq8TgA20",
-      "track_name": "STAY (with Justin Bieber)",
-      "artists": "The Kid LAROI;Justin Bieber",
-      "album_name": "STAY (with Justin Bieber)",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "38T0tPVZHcPZyhtOcCP7pF",
-      "track_name": "STAR WALKIN' (League of Legends Worlds Anthem)",
-      "artists": "Lil Nas X",
-      "album_name": "STAR WALKIN' (League of Legends Worlds Anthem)",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "3F5CgOj3wFlRv51JsHbxhe",
-      "track_name": "Jimmy Cooks (feat. 21 Savage)",
-      "artists": "Drake;21 Savage",
-      "album_name": "Honestly, Nevermind",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "1aL9518P5G72N92b48tuKw",
-      "track_name": "Summer High",
-      "artists": "AP Dhillon",
-      "album_name": "Summer High",
-      "genre": "hip-hop"
-    },
-    {
-      "track_id": "3dGFeK9WTwj2PAiQoaXMzB",
-      "track_name": "Brooklyn Zoo",
-      "artists": "Ol' Dirty Bastard",
-      "album_name": "Rap Classics",
-      "genre": "alternative"
-    },
-    {
-      "track_id": "5MG69A9XyXDbBbeOxdR3Tl",
-      "track_name": "don't miss me",
-      "artists": "Claire Rosinkranz",
-      "album_name": "don’t miss me",
-      "genre": "indie-pop"
-    }
-  ],
-  "spotify_art_cache": {},
   "artist_affinity": {
-    "hiphop": 1.8,
-    "want a chill vibe": 1.8,
-    "ap dhillon": 0.04999999999999993,
-    "shubh": -0.9,
-    "ikky": -0.45,
-    "shinda kahlon": -0.45,
-    "gurinder gill": -1.35,
-    "gminxr": -0.45,
-    "gen hoshino": -0.45,
-    "bizarrap": -0.45,
-    "quevedo": -0.45,
-    "drake": 1.4,
-    "21 savage": 1.4,
-    "lil nas x": 2.3499999999999996,
-    "the kid laroi": 4.199999999999999,
-    "justin bieber": 1.4,
-    "sam smith": -0.45,
-    "kim petras": -0.45,
-    "manuel turizo": -0.45,
-    "onerepublic": -0.45,
-    "harry styles": 1.4,
-    "armani white": 2.8,
-    "psy": -2.7,
-    "suga": -2.7,
-    "neeraj shridhar": -0.45,
-    "kavita seth": -0.45,
-    "divine": -0.45,
-    "eminem": 5.199999999999999,
-    "rihanna": 1.4,
-    "falling in reverse": -0.45,
-    "koo koo kanga roo": -0.45,
-    "la bouche": 0.95,
-    "jim norton": -0.45,
-    "manni sandhu": -0.9,
-    "future": 1.4,
-    "yung gravy": 1.4,
-    "king": -0.45,
-    "kendrick lamar": 1.4,
-    "blink-182": 1.4,
-    "2pac": 1.4,
-    "dr. dre": 2.3499999999999996,
-    "snoop dogg": 2.3499999999999996,
-    "50 cent": 1.4,
-    "dido": -0.9,
-    "mark ronson": 1.4,
-    "bruno mars": 1.4,
-    "j. cole": 1.4,
-    "cults": 1.4,
-    "amber coffman": 1.4,
-    "beach bunny": 1.4,
-    "nate dogg": 1.4,
-    "jack harlow": -0.45
+    "brent faiyaz": 41.95999999999999,
+    "mac demarco": 27.849999999999987,
+    "baby keem": 29.039999999999985,
+    "frank ocean": 15.180000000000001,
+    "tyler, the creator": 29.51999999999999,
+    "j. cole": 10.47,
+    "don toliver": 34.29999999999998,
+    "mac miller": 10.870000000000001,
+    "smino": 8.08,
+    "bruno mars": 4.49,
+    "denzel curry": 14.050000000000002,
+    "kendrick lamar": 15.180000000000001,
+    "a$ap rocky": 30.349999999999984,
+    "george harrison": 9.99,
+    "tame impala": 15.180000000000001,
+    "kaytranada": 13.8,
+    "leon thomas": 28.85999999999999,
+    "daniel caesar": 10.15,
+    "jid": 7.1,
+    "freddie gibbs": 1.6,
+    "thundercat": 6.380000000000001,
+    "westside gunn": 13.910000000000002,
+    "young nudy": 1.6,
+    "kanye west": 1.6,
+    "eem triplin": 4.08,
+    "drake": 3.5999999999999996,
+    "childish gambino": 1.2,
+    "pharrell williams": 3.59,
+    "outkast": 3.68,
+    "steve lacy": 6.16,
+    "jpegmafia": 6.07,
+    "anderson .paak": 6.700000000000001,
+    "lil yachty": 10.760000000000002,
+    "momo boyd": 5.5,
+    "sunny lou": 5.5,
+    "414bigfrank": 5.5,
+    "run along forever": 5.5,
+    "tony shhnow": 5.5,
+    "cordae": 5.5,
+    "earl sweatshirt": 7.890000000000001,
+    "a tribe called quest": 12.670000000000002,
+    "busta rhymes": 5.5,
+    "little beaver": 5.140000000000001,
+    "eagles": 5.140000000000001,
+    "the growlers": 5.140000000000001,
+    "sturdyyoungin": 2.75,
+    "ohthatsmizz": 2.75,
+    "zeddy will": 2.75,
+    "41": 2.75,
+    "kyle richh": 2.75,
+    "poodee": 2.75,
+    "glorilla": 2.48,
+    "sexyy red": 2.48,
+    "lil wayne": 2.48,
+    "clairo": 4.96,
+    "teezo touchdown": 2.48,
+    "cruza": 4.96,
+    "latoiya williams": 2.48,
+    "schoolboy q": 2.48,
+    "santigold": 2.48,
+    "fousheé": 2.48,
+    "doechii": 4.87,
+    "rosario dawson": 2.48,
+    "triathalon": 2.48,
+    "the roots": 2.39,
+    "dr. dre": 2.39,
+    "eminem": 2.39,
+    "the smashing pumpkins": 4.78,
+    "slowdown": 2.39,
+    "rawayana": 2.39,
+    "monsieur periné": 2.39,
+    "tevin campbell": 2.39,
+    "electric light orchestra": 2.39,
+    "dabeull": 2.39,
+    "holybrune": 2.39,
+    "that mexican ot": 4.78,
+    "moneybagg yo": 2.39,
+    "lil uzi vert": 4.78,
+    "emahoy tsege mariam gebru": 2.39,
+    "sprout house band": 2.39,
+    "justice der": 2.39,
+    "boris garbiner happening": 2.39,
+    "unusual demont": 2.39,
+    "concrete boys": 9.56,
+    "draft day": 4.78,
+    "dc2trill": 4.78,
+    "chancho en piedra": 2.39,
+    "wande coal": 2.39,
+    "dj tunez": 2.39,
+    "mc virgins": 2.39,
+    "wonder": 2.39,
+    "the beatnuts": 2.39,
+    "method man": 2.39,
+    "bee gees": 2.39,
+    "nicki minaj": 2.39,
+    "camo!": 2.39,
+    "veeze": 2.39,
+    "calle 13": 2.39,
+    "2pac": 2.39,
+    "afro b": 2.39,
+    "original koffee": 2.39,
+    "talking heads": 2.39,
+    "mc kevin o chris": 2.39,
+    "jaÿ z": 7.17,
+    "led zeppelin": 4.78,
+    "skrillex": 2.39,
+    "bob marley & the wailers": 2.39,
+    "n.w.a.": 2.39,
+    "don omar": 2.39,
+    "lucenzo": 2.39,
+    "la bouche": 2.39,
+    "ethereal": 2.39,
+    "playboi carti": 4.78,
+    "parquet courts": 2.39,
+    "famous dex": 2.39,
+    "the band": 2.39,
+    "flavien berger": 2.39,
+    "the beatles": 16.73,
+    "mura masa": 2.39,
+    "slowthai": 2.39,
+    "donovan": 2.39,
+    "the free music": 2.39,
+    "najib alhoush": 2.39,
+    "fairuz": 2.39,
+    "rxknephew": 2.39,
+    "django reinhardt": 4.78,
+    "stéphane grappelli": 2.39,
+    "quintette du hot club de france": 2.39,
+    "hamid al shaeri": 2.39,
+    "smif n wessun": 2.39,
+    "masayoshi takanaka": 4.78,
+    "the meters": 2.39,
+    "sly & the family stone": 2.39,
+    "the rolling stones": 2.39,
+    "billy idol": 2.39,
+    "the doors": 2.39,
+    "nirvana": 9.56,
+    "third eye blind": 2.39,
+    "soundgarden": 2.39,
+    "mike": 2.39,
+    "jamiroquai": 4.78,
+    "brunello": 2.39,
+    "vargas": 2.39,
+    "swapa": 2.39,
+    "danzo.": 2.39,
+    "jozzy": 2.39,
+    "tommy richman": 2.39,
+    "mynameisntjmack": 2.39,
+    "03 greedo": 2.39,
+    "jill scott": 2.39,
+    "tierra whack": 2.39,
+    "wale the sage": 2.39,
+    "sideshow": 2.39,
+    "kenny mason": 2.39,
+    "prodwithflavor": 2.39,
+    "the garden": 2.39,
+    "nascent": 2.39,
+    "jordan ward": 11.950000000000001,
+    "rizz capolatti": 2.39,
+    "6lack": 2.39,
+    "joony": 2.39,
+    "gorillaz": 4.78,
+    "trueno": 2.39,
+    "proof": 2.39,
+    "kal banx": 2.39,
+    "sir": 2.39,
+    "n.e.r.d": 2.39,
+    "rihanna": 2.39,
+    "gwen stefani": 2.39,
+    "akon": 2.39,
+    "454": 2.39,
+    "action bronson": 2.39,
+    "jev.": 2.39,
+    "too $hort": 2.39,
+    "ski mask the slump god": 7.17,
+    "kingpin skinny pimp": 2.39,
+    "terrace martin": 2.39,
+    "arin ray": 2.39,
+    "mixtious": 2.39,
+    "tiger mood": 2.39,
+    "baby rose": 2.39,
+    "calvin harris": 2.39,
+    "florence welch": 2.39,
+    "usher": 2.39,
+    "will.i.am": 2.39,
+    "flo rida": 2.39,
+    "t pain": 2.39,
+    "daft punk": 4.78,
+    "father": 2.39,
+    "zack fox": 2.39,
+    "archibald slim": 2.39,
+    "michael jackson": 9.59,
+    "d'angelo": 2.39,
+    "mk.gee": 2.39,
+    "syd": 2.39,
+    "njomza": 2.39,
+    "whatmore": 2.39,
+    "jimi hendrix": 16.73,
+    "funkadelic": 2.39,
+    "king crimson": 2.39,
+    "the animals": 2.39,
+    "john mayall & the bluesbreakers": 2.39,
+    "wiz khalifa": 2.39,
+    "fakemink": 2.39,
+    "gunna": 2.39,
+    "sahbabii": 2.39,
+    "steely dan": 11.950000000000001,
+    "frank zappa": 2.39,
+    "crumb": 4.78,
+    "femi ishola": 2.39,
+    "femdot.": 2.39,
+    "imylia": 2.39,
+    "marwick": 2.39,
+    "your stepdad": 2.39,
+    "quantrell": 4.78,
+    "kuhsigh": 2.39,
+    "conway the machine": 2.39,
+    "benny the butcher": 2.39,
+    "damian marley": 2.39,
+    "albert king": 2.39,
+    "thin lizzy": 2.39,
+    "haley heynderickx": 2.39,
+    "lil gray": 2.39,
+    "missy elliott": 2.39,
+    "santana": 2.39,
+    "vince staples": 2.39,
+    "13th floor elevators": 2.39,
+    "los destellos": 2.39,
+    "dean blunt": 2.39,
+    "sauce walka": 2.39,
+    "carthago": 2.39,
+    "young thug": 2.39,
+    "eric clapton": 2.39,
+    "the who": 2.39,
+    "earth, wind & fire": 2.39,
+    "pages": 2.39,
+    "jethro tull": 2.39,
+    "fleetwood mac": 4.78,
+    "jesse colin young": 2.39,
+    "wings": 2.39,
+    "armani white": 2.39,
+    "los retros": 2.39,
+    "black star": 2.39,
+    "vinia mojica": 4.78,
+    "odeal": 2.39,
+    "wizkid": 2.39,
+    "ron carter": 2.39,
+    "czarface": 2.39,
+    "mf doom": 2.39,
+    "brockhampton": 2.39,
+    "digable planets": 2.39,
+    "de la soul": 2.39,
+    "shortie no mass": 2.39,
+    "the pharcyde": 4.78,
+    "common": 2.39,
+    "shroom": 2.39,
+    "a$ap mob": 2.39,
+    "quavo": 2.39,
+    "loving": 2.39,
+    "justin timberlake": 3.5999999999999996
   },
   "genre_affinity": {
-    "hip hop": 11.200000000000001,
-    "chillwave": 4.199999999999999,
-    "rap": 5.6,
-    "hip-hop": 17.600000000000005,
-    "acoustic": -0.45,
-    "dance pop": 9.8,
-    "dance": 0.95,
-    "latin": -0.45,
-    "piano": -0.45,
-    "pop": 1.4,
-    "metalcore": -0.45,
-    "kids": -0.45,
-    "german": 0.95,
-    "comedy": -0.45,
-    "punk-rock": 1.4,
-    "funk": 3.749999999999999,
-    "pop punk": 3.08,
-    "indie pop": 3.08,
-    "heavy metal": 3.08,
-    "indie-pop": 1.4
+    "afrobeats": 7.2
   },
   "track_affinity": {
-    "summer high": 1.1199999999999999,
-    "no love": -0.36000000000000004,
-    "baller": -0.36000000000000004,
-    "insane": -0.36000000000000004,
-    "comedy": -0.36000000000000004,
-    "quevedo: bzrp music sessions, vol. 52": -0.36000000000000004,
-    "jimmy cooks (feat. 21 savage)": 1.1199999999999999,
-    "star walkin' (league of legends worlds anthem)": 1.1199999999999999,
-    "stay (with justin bieber)": 1.1199999999999999,
-    "unholy (feat. kim petras)": -0.36000000000000004,
-    "la bachata": -0.36000000000000004,
-    "i ain't worried": -0.36000000000000004,
-    "as it was": 1.1199999999999999,
-    "billie eilish.": 2.2399999999999998,
-    "that that (prod. & feat. suga of bts)": -2.16,
-    "tum hi ho bandhu": -0.36000000000000004,
-    "kaam 25 - sacred games": -0.36000000000000004,
-    "love the way you lie": 1.1199999999999999,
-    "i'm not a vampire": -0.36000000000000004,
-    "pop see ko": -0.36000000000000004,
-    "be my lover": 0.7599999999999998,
-    "the bridge, lol": -0.36000000000000004,
-    "majhail": -0.7200000000000001,
-    "mask off": 1.1199999999999999,
-    "thousand miles": 2.2399999999999998,
-    "betty (get money)": 1.1199999999999999,
-    "tu aake dekhle": -0.36000000000000004,
-    "humble.": 1.1199999999999999,
-    "the rock show": 1.1199999999999999,
-    "ambitionz az a ridah": 1.1199999999999999,
-    "the next episode": 1.8799999999999997,
-    "the real slim shady": 3.3599999999999994,
-    "in da club": 1.1199999999999999,
-    "stan": -0.7200000000000001,
-    "thats what i want": 1.1199999999999999,
-    "uptown funk (feat. bruno mars)": 1.1199999999999999,
-    "venom - music from the motion picture": -0.36000000000000004,
-    "she knows (feat. amber coffman & cults)": 1.1199999999999999,
-    "cloud 9": 1.1199999999999999,
-    "till i collapse": 1.1199999999999999,
-    "without me": -0.36000000000000004,
-    "industry baby (feat. jack harlow)": -0.36000000000000004
+    "have to.": 4.5,
+    "butterflies.": 3.0,
+    "i've been waiting for her": 3.0,
+    "other side.": 3.0,
+    "good flirts (feat. kendrick lamar & momo boyd)": 3.0,
+    "there it is": 3.0,
+    "don't look at numbers remix": 3.0,
+    "wah wah 2014 remaster": 3.0,
+    "nights": 3.0,
+    "kryptonite": 3.0,
+    "rnp (feat. anderson .paak)": 3.0,
+    "heart to heart": 1.9,
+    "birds & the bees": 3.0,
+    "gamma (need the <3)": 3.0,
+    "oh my god (feat. busta rhymes)": 3.0,
+    "treasure in the hills": 2.7,
+    "breaking point": 2.7,
+    "at all": 1.5,
+    "my muse": 1.5,
+    "youugly (with westside gunn)": 1.5,
+    "heel": 2.7,
+    "party down pt. 1": 1.5,
+    "one of these nights 2013 remaster": 1.5,
+    "my old ways": 1.5,
+    "space invader": 1.5,
+    "gz": 1.5,
+    "don't worry babe / i got u babe": 1.5,
+    "afterthought": 1.5,
+    "feel my funk": 1.5,
+    "trippin": 1.5,
+    "not fair": 1.5,
+    "buckets": 1.5,
+    "stay here 4 life (feat. brent faiyaz)": 2.6,
+    "goodbye bitch!": 1.5,
+    "sticky (feat. glorilla, sexyy red & lil wayne)": 1.2,
+    "terrapin": 1.2,
+    "darling, i (feat. teezo touchdown)": 1.2,
+    "i hope you find your way home": 1.2,
+    "echo": 1.2,
+    "fiji (feat. cruza)": 1.2,
+    "st. chroma (feat. daniel caesar)": 1.2,
+    "take your mask off (feat. daniel caesar & latoiya williams)": 1.2,
+    "i do": 1.2,
+    "thought i was dead (feat. schoolboy q & santigold)": 1.2,
+    "judge judy": 1.2,
+    "give you the world": 1.2,
+    "sunshine (feat. fousheé)": 1.2,
+    "balloon (feat. doechii)": 1.2,
+    "either on or off the drugs": 1.2,
+    "she lives in my lap (feat. rosario dawson)": 1.2,
+    "eh cruza remix": 1.2,
+    "mellow my man": 1.1,
+    "forgot about dre": 1.1,
+    "perfect": 1.1,
+    "sonho do brasil": 1.1,
+    "hora loca": 1.1,
+    "can we talk": 1.1,
+    "last train to london": 1.1,
+    "dx7 indastudio 10": 1.1,
+    "twisting fingers (with moneybagg yo)": 1.1,
+    "the stars keep on calling my name": 1.1,
+    "what you saying": 1.1,
+    "song of abayi": 1.1,
+    "spanish flowers": 1.1,
+    "self control": 1.1,
+    "breezin": 1.1,
+    "amber": 1.1,
+    "if i wasn’t rappin’ (feat. lil yachty, draft day, dc2trill)": 1.1,
+    "eligiendo una reina": 1.1,
+    "iskaba": 1.1,
+    "anime thighs": 1.1,
+    "se acabo (feat. method man)": 1.1,
+    "stayin alive": 1.1,
+    "super freaky girl": 1.1,
+    "crete cypher intro (feat. lil yachty, camo!, draft day, dc2trill)": 1.1,
+    "all the same (feat. lil yachty, veeze)": 1.1,
+    "atrévete te te": 1.1,
+    "ambitionz az a ridah": 1.1,
+    "drogba (joanna)": 1.1,
+    "toast": 1.1,
+    "psycho killer 2005 remaster": 1.1,
+    "incendeia": 1.1,
+    "biking": 1.1,
+    "whole lotta love 1990 remaster": 1.1,
+    "humble. skrillex remix": 1.1,
+    "three little birds": 1.1,
+    "fuck tha police": 1.1,
+    "danza kuduro": 1.1,
+    "be my lover": 1.1,
+    "beef": 1.1,
+    "sunbathing animal": 1.1,
+    "japan": 1.1,
+    "ophelia remastered 2000": 1.1,
+    "castelmaure": 1.1,
+    "revolution 1 remastered 2009": 1.1,
+    "deal wiv it": 1.1,
+    "season of the witch": 1.1,
+    "free music ii": 1.1,
+    "le beirut": 1.1,
+    "american tterroristt": 1.1,
+    "beyond the sea (la mer)": 1.1,
+    "minor swing": 1.1,
+    "ayonha": 1.1,
+    "wreckonize remix vocal": 1.1,
+    "sundrops": 1.1,
+    "cissy strut": 1.1,
+    "if you want me to stay": 1.1,
+    "michael irvin": 1.1,
+    "paint it, black": 1.1,
+    "eyes without a face": 1.1,
+    "riders on the storm": 1.1,
+    "lithium": 1.1,
+    "semi charmed life": 1.1,
+    "today 2011 remaster": 1.1,
+    "black hole sun": 1.1,
+    "immigrant song remaster": 1.1,
+    "in bloom": 1.1,
+    "atm": 1.1,
+    "butter": 1.1,
+    "who knows": 1.1,
+    "nuthin i can do is wrng": 1.1,
+    "canned heat": 1.1,
+    "ghost dance": 1.1,
+    "sweet home": 1.1,
+    "heights": 1.1,
+    "kendrick lamar . bodies": 1.1,
+    "coke white (feat. lil yachty)": 1.1,
+    "fish n steak (what it is) (feat. tyler, the creator & jozzy)": 1.1,
+    "west coast (feat. mynameisntjmack & 03 greedo)": 1.1,
+    "norf side (feat. tierra whack)": 1.1,
+    "me and madness": 1.1,
+    "lifes as violent as you make it": 1.1,
+    "4": 1.1,
+    "not my bro": 1.1,
+    "knocking": 1.1,
+    "vicious": 1.1,
+    "she knows too much": 1.1,
+    "special k": 1.1,
+    "thy mission": 1.1,
+    "he got the gas (feat. jordan ward & rizz capolatti)": 1.1,
+    "mustard (with 6lack)": 1.1,
+    "jealousy": 1.1,
+    "e85": 1.1,
+    "the manifesto (feat. trueno and proof)": 1.1,
+    "mob": 1.1,
+    "lemon": 1.1,
+    "brasilian skies": 1.1,
+    "love is a drug": 1.1,
+    "the sweet escape": 1.1,
+    "something serious": 1.1,
+    "sanjuro": 1.1,
+    "salvaje": 1.1,
+    "save a spot for me.": 1.1,
+    "$ex appeal (feat. too $hort)": 1.1,
+    "hit the floor (with ski mask the slump god)": 1.1,
+    "lunatic interlude (with kingpin skinny pimp)": 1.1,
+    "house money": 1.1,
+    "this morning (feat. arin ray & smino)": 1.1,
+    "teach me how to dougie x only time": 1.1,
+    "chichi": 1.1,
+    "friends again": 1.1,
+    "ca$ino": 1.1,
+    "sweet nothing (feat. florence welch)": 1.1,
+    "omg (feat. will.i.am)": 1.1,
+    "low (feat. t pain)": 1.1,
+    "digital love": 1.1,
+    "unbothered": 1.1,
+    "body": 1.1,
+    "let's kick his ass!": 1.1,
+    "circus circus free$tyle": 1.1,
+    "i can't help it": 1.1,
+    "chicken grease": 1.1,
+    "mr. t": 1.1,
+    "tiramisu": 1.1,
+    "a day in the life 2017 mix": 1.1,
+    "bitch, don’t kill my vibe remix": 1.1,
+    "cosmic girl remastered 2013": 1.1,
+    "something about us": 1.1,
+    "cz": 1.1,
+    "in the morning (feat. thundercat & syd)": 1.1,
+    "full moon. (fall in tokyo) [bonus track]": 1.1,
+    "planet god damn (feat. njomza)": 1.1,
+    "low down derrty blues": 1.1,
+    "pure fantasy.": 1.1,
+    "put it on hearts": 1.1,
+    "voodoo chile": 1.1,
+    "maggot brain": 1.1,
+    "i talk to the wind": 1.1,
+    "don't let me be misunderstood": 1.1,
+    "freedom": 1.1,
+    "fire": 1.1,
+    "slide through my fingers": 1.1,
+    "the super natural": 1.1,
+    "stranger's road": 1.1,
+    "the kid frankie": 1.1,
+    "young millionaire .": 1.1,
+    "made for this shit": 1.1,
+    "high functioning": 1.1,
+    "poor thang": 1.1,
+    "themselves": 1.1,
+    "pleasure’s mine": 1.1,
+    "k9 (feat. sahbabii)": 1.1,
+    "fire in the hole": 2.2,
+    "black napkins": 1.1,
+    "part iii": 1.1,
+    "why won't they talk to me?": 1.1,
+    "my sweet lord 2014 remaster": 1.1,
+    "smells like teen spirit": 1.1,
+    "come as you are": 1.1,
+    "safety": 1.1,
+    "29 intro": 1.1,
+    "bring me dat (with femdot.)": 1.1,
+    "asa mitaka": 1.1,
+    "dust": 1.1,
+    "cash flow": 1.1,
+    "on tha ropes": 1.1,
+    "it's the cash fault": 1.1,
+    "george bondo (feat. conway the machine & benny the butcher)": 1.1,
+    "bam": 1.1,
+    "the wind cries mary": 1.1,
+    "cold feet": 1.1,
+    "still in love with you": 1.1,
+    "rainy day, dream away": 1.1,
+    "the bug collector": 1.1,
+    "last one left (feat. missy elliott & lil gray)": 1.1,
+    "something remastered 2009": 1.1,
+    "song of the wind": 1.1,
+    "balloon": 1.1,
+    "big fish": 1.1,
+    "don't be dumb / trip baby": 1.1,
+    "josie": 1.1,
+    "lucy in the sky with diamonds 2017 mix": 1.1,
+    "catch me outside": 1.1,
+    "day tripper remastered 2009": 1.1,
+    "manic depression": 1.1,
+    "you're gonna miss me (2008 remastered original mono lp version)": 1.1,
+    "black flag freestyle (with that mexican ot)": 1.1,
+    "guajira sicodélica": 1.1,
+    "19": 1.1,
+    "alech": 1.1,
+    "with them": 1.1,
+    "the last mall": 1.1,
+    "eric after hours blues": 1.1,
+    "who are you": 1.1,
+    "shining star": 1.1,
+    "let it go (2024 remaster)": 1.1,
+    "revolution remastered 2009": 1.1,
+    "witchy woman 2013 remaster": 1.1,
+    "cross eyed mary": 1.1,
+    "bodhisattva": 1.1,
+    "like it this way": 1.1,
+    "peg": 1.1,
+    "you make loving fun 2004 remaster": 1.1,
+    "spanish castle magic": 1.1,
+    "fire on the water": 1.1,
+    "magneto and titanium man remastered 2014": 1.1,
+    "get into the party life": 1.1,
+    "no trespassing": 1.1,
+    "wishlist [with armani white]": 1.1,
+    "punk rocky": 1.1,
+    "20200820 turn my tv on": 1.1,
+    "20200229 2": 1.1,
+    "no photos": 1.1,
+    "it's got to be you": 1.1,
+    "ode to viceroy": 1.1,
+    "playa": 1.1,
+    "robbery (feat. doechii)": 1.1,
+    "whiskey (release me) (feat. gorillaz & westside gunn)": 1.1,
+    "k.o.s. (determination)": 1.1,
+    "nights in the sun (feat. wizkid)": 1.1,
+    "verses from the abstract (feat. vinia mojica & ron carter)": 1.1,
+    "bomb thrown": 1.1,
+    "all that": 1.1,
+    "dikembe!": 1.1,
+    "escapism (gettin' free)": 1.1,
+    "ego trippin' (part two)": 1.1,
+    "bullshit": 1.1,
+    "be (intro)": 1.1,
+    "vibes and stuff": 1.1,
+    "she said": 1.1,
+    "unknown from me": 1.1,
+    "no pole": 1.1,
+    "raf (feat. a$ap rocky, playboi carti, quavo, lil uzi vert & frank ocean)": 1.1,
+    "a mirror for two voices": 1.1,
+    "sun king remastered 2009": 1.1,
+    "billie jean": 0.96,
+    "love never felt so good": 2.88,
+    "don’t matter to me (with michael jackson)": 1.92
   },
-  "spotify_user_seeded": false,
-  "spotify_user_summary": {}
+  "artist_posterior": {
+    "brent faiyaz": {
+      "alpha": 5.934,
+      "beta": 0.969
+    },
+    "mac demarco": {
+      "alpha": 4.294,
+      "beta": 0.979
+    },
+    "baby keem": {
+      "alpha": 4.4336,
+      "beta": 0.978
+    },
+    "frank ocean": {
+      "alpha": 2.8043,
+      "beta": 0.989
+    },
+    "tyler, the creator": {
+      "alpha": 4.4818,
+      "beta": 0.977
+    },
+    "j. cole": {
+      "alpha": 2.2472,
+      "beta": 0.992
+    },
+    "don toliver": {
+      "alpha": 5.0468,
+      "beta": 0.973
+    },
+    "mac miller": {
+      "alpha": 2.2951,
+      "beta": 0.992
+    },
+    "smino": {
+      "alpha": 1.9633,
+      "beta": 0.994
+    },
+    "bruno mars": {
+      "alpha": 1.5363,
+      "beta": 0.997
+    },
+    "denzel curry": {
+      "alpha": 2.6722,
+      "beta": 0.989
+    },
+    "kendrick lamar": {
+      "alpha": 2.8043,
+      "beta": 0.989
+    },
+    "a$ap rocky": {
+      "alpha": 4.5867,
+      "beta": 0.976
+    },
+    "george harrison": {
+      "alpha": 2.1902,
+      "beta": 0.993
+    },
+    "tame impala": {
+      "alpha": 2.8033,
+      "beta": 0.989
+    },
+    "kaytranada": {
+      "alpha": 2.6386,
+      "beta": 0.99
+    },
+    "leon thomas": {
+      "alpha": 4.4055,
+      "beta": 0.978
+    },
+    "daniel caesar": {
+      "alpha": 2.2069,
+      "beta": 0.992
+    },
+    "jid": {
+      "alpha": 1.8452,
+      "beta": 0.995
+    },
+    "freddie gibbs": {
+      "alpha": 1.191,
+      "beta": 0.999
+    },
+    "thundercat": {
+      "alpha": 1.7614,
+      "beta": 0.995
+    },
+    "westside gunn": {
+      "alpha": 2.6544,
+      "beta": 0.989
+    },
+    "young nudy": {
+      "alpha": 1.191,
+      "beta": 0.999
+    },
+    "kanye west": {
+      "alpha": 1.191,
+      "beta": 0.999
+    },
+    "eem triplin": {
+      "alpha": 1.4861,
+      "beta": 0.997
+    },
+    "drake": {
+      "alpha": 4.573,
+      "beta": 0.989
+    },
+    "childish gambino": {
+      "alpha": 1.143,
+      "beta": 0.999
+    },
+    "pharrell williams": {
+      "alpha": 1.4286,
+      "beta": 0.997
+    },
+    "outkast": {
+      "alpha": 1.4382,
+      "beta": 0.997
+    },
+    "steve lacy": {
+      "alpha": 1.7328,
+      "beta": 0.995
+    },
+    "jpegmafia": {
+      "alpha": 1.7232,
+      "beta": 0.995
+    },
+    "anderson .paak": {
+      "alpha": 1.7987,
+      "beta": 0.995
+    },
+    "lil yachty": {
+      "alpha": 2.2821,
+      "beta": 0.991
+    },
+    "momo boyd": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "sunny lou": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "414bigfrank": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "run along forever": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "tony shhnow": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "cordae": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "earl sweatshirt": {
+      "alpha": 1.9406,
+      "beta": 0.994
+    },
+    "a tribe called quest": {
+      "alpha": 2.5081,
+      "beta": 0.99
+    },
+    "busta rhymes": {
+      "alpha": 1.6561,
+      "beta": 0.996
+    },
+    "little beaver": {
+      "alpha": 1.6131,
+      "beta": 0.996
+    },
+    "eagles": {
+      "alpha": 1.6131,
+      "beta": 0.996
+    },
+    "the growlers": {
+      "alpha": 1.6131,
+      "beta": 0.996
+    },
+    "sturdyyoungin": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "ohthatsmizz": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "zeddy will": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "41": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "kyle richh": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "poodee": {
+      "alpha": 1.3278,
+      "beta": 0.998
+    },
+    "glorilla": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "sexyy red": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "lil wayne": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "clairo": {
+      "alpha": 1.5904,
+      "beta": 0.996
+    },
+    "teezo touchdown": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "cruza": {
+      "alpha": 1.5904,
+      "beta": 0.996
+    },
+    "latoiya williams": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "schoolboy q": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "santigold": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "fousheé": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "doechii": {
+      "alpha": 1.5808,
+      "beta": 0.996
+    },
+    "rosario dawson": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "triathalon": {
+      "alpha": 1.2955,
+      "beta": 0.998
+    },
+    "the roots": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "dr. dre": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "eminem": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the smashing pumpkins": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "slowdown": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "rawayana": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "monsieur periné": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "tevin campbell": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "electric light orchestra": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "dabeull": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "holybrune": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "that mexican ot": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "moneybagg yo": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "lil uzi vert": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "emahoy tsege mariam gebru": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sprout house band": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "justice der": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "boris garbiner happening": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "unusual demont": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "concrete boys": {
+      "alpha": 2.14,
+      "beta": 0.992
+    },
+    "draft day": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "dc2trill": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "chancho en piedra": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wande coal": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "dj tunez": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mc virgins": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wonder": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the beatnuts": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "method man": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "bee gees": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "nicki minaj": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "camo!": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "veeze": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "calle 13": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "2pac": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "afro b": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "original koffee": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "talking heads": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mc kevin o chris": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jaÿ z": {
+      "alpha": 1.8559,
+      "beta": 0.994
+    },
+    "led zeppelin": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "skrillex": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "bob marley & the wailers": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "n.w.a.": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "don omar": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "lucenzo": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "la bouche": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "ethereal": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "playboi carti": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "parquet courts": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "famous dex": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the band": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "flavien berger": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the beatles": {
+      "alpha": 2.9892,
+      "beta": 0.986
+    },
+    "mura masa": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "slowthai": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "donovan": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the free music": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "najib alhoush": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "fairuz": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "rxknephew": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "django reinhardt": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "stéphane grappelli": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "quintette du hot club de france": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "hamid al shaeri": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "smif n wessun": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "masayoshi takanaka": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "the meters": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sly & the family stone": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the rolling stones": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "billy idol": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the doors": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "nirvana": {
+      "alpha": 2.14,
+      "beta": 0.992
+    },
+    "third eye blind": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "soundgarden": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mike": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jamiroquai": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "brunello": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "vargas": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "swapa": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "danzo.": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jozzy": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "tommy richman": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mynameisntjmack": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "03 greedo": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jill scott": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "tierra whack": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wale the sage": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sideshow": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "kenny mason": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "prodwithflavor": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the garden": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "nascent": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jordan ward": {
+      "alpha": 2.4236,
+      "beta": 0.99
+    },
+    "rizz capolatti": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "6lack": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "joony": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "gorillaz": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "trueno": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "proof": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "kal banx": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sir": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "n.e.r.d": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "rihanna": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "gwen stefani": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "akon": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "454": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "action bronson": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jev.": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "too $hort": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "ski mask the slump god": {
+      "alpha": 1.8559,
+      "beta": 0.994
+    },
+    "kingpin skinny pimp": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "terrace martin": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "arin ray": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mixtious": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "tiger mood": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "baby rose": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "calvin harris": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "florence welch": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "usher": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "will.i.am": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "flo rida": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "t pain": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "daft punk": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "father": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "zack fox": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "archibald slim": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "michael jackson": {
+      "alpha": 11.4693,
+      "beta": 0.9684
+    },
+    "d'angelo": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mk.gee": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "syd": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "njomza": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "whatmore": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jimi hendrix": {
+      "alpha": 2.9892,
+      "beta": 0.986
+    },
+    "funkadelic": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "king crimson": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the animals": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "john mayall & the bluesbreakers": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wiz khalifa": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "fakemink": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "gunna": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sahbabii": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "steely dan": {
+      "alpha": 2.4236,
+      "beta": 0.99
+    },
+    "frank zappa": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "crumb": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "femi ishola": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "femdot.": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "imylia": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "marwick": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "your stepdad": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "quantrell": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "kuhsigh": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "conway the machine": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "benny the butcher": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "damian marley": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "albert king": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "thin lizzy": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "haley heynderickx": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "lil gray": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "missy elliott": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "santana": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "vince staples": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "13th floor elevators": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "los destellos": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "dean blunt": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "sauce walka": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "carthago": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "young thug": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "eric clapton": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the who": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "earth, wind & fire": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "pages": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "jethro tull": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "fleetwood mac": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "jesse colin young": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wings": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "armani white": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "los retros": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "black star": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "vinia mojica": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "odeal": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "wizkid": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "ron carter": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "czarface": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "mf doom": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "brockhampton": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "digable planets": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "de la soul": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "shortie no mass": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "the pharcyde": {
+      "alpha": 1.5712,
+      "beta": 0.996
+    },
+    "common": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "shroom": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "a$ap mob": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "quavo": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "loving": {
+      "alpha": 1.2859,
+      "beta": 0.998
+    },
+    "justin timberlake": {
+      "alpha": 6.1342,
+      "beta": 0.985
+    }
+  },
+  "genre_posterior": {
+    "afrobeats": {
+      "alpha": 8.9698,
+      "beta": 0.9703
+    }
+  },
+  "track_posterior": {
+    "have to.": {
+      "alpha": 1.2667,
+      "beta": 0.997
+    },
+    "butterflies.": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "i've been waiting for her": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "other side.": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "good flirts (feat. kendrick lamar & momo boyd)": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "there it is": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "don't look at numbers remix": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "wah wah 2014 remaster": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "nights": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "kryptonite": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "rnp (feat. anderson .paak)": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "heart to heart": {
+      "alpha": 1.113,
+      "beta": 0.999
+    },
+    "birds & the bees": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "gamma (need the <3)": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "oh my god (feat. busta rhymes)": {
+      "alpha": 1.1779,
+      "beta": 0.998
+    },
+    "treasure in the hills": {
+      "alpha": 1.1599,
+      "beta": 0.998
+    },
+    "breaking point": {
+      "alpha": 1.1599,
+      "beta": 0.998
+    },
+    "at all": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "my muse": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "youugly (with westside gunn)": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "heel": {
+      "alpha": 1.1599,
+      "beta": 0.998
+    },
+    "party down pt. 1": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "one of these nights 2013 remaster": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "my old ways": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "space invader": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "gz": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "don't worry babe / i got u babe": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "afterthought": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "feel my funk": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "trippin": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "not fair": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "buckets": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "stay here 4 life (feat. brent faiyaz)": {
+      "alpha": 1.1539,
+      "beta": 0.998
+    },
+    "goodbye bitch!": {
+      "alpha": 1.089,
+      "beta": 0.999
+    },
+    "sticky (feat. glorilla, sexyy red & lil wayne)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "terrapin": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "darling, i (feat. teezo touchdown)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "i hope you find your way home": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "echo": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "fiji (feat. cruza)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "st. chroma (feat. daniel caesar)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "take your mask off (feat. daniel caesar & latoiya williams)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "i do": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "thought i was dead (feat. schoolboy q & santigold)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "judge judy": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "give you the world": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "sunshine (feat. fousheé)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "balloon (feat. doechii)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "either on or off the drugs": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "she lives in my lap (feat. rosario dawson)": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "eh cruza remix": {
+      "alpha": 1.071,
+      "beta": 0.999
+    },
+    "mellow my man": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "forgot about dre": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "perfect": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sonho do brasil": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "hora loca": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "can we talk": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "last train to london": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "dx7 indastudio 10": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "twisting fingers (with moneybagg yo)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the stars keep on calling my name": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "what you saying": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "song of abayi": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "spanish flowers": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "self control": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "breezin": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "amber": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "if i wasn’t rappin’ (feat. lil yachty, draft day, dc2trill)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "eligiendo una reina": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "iskaba": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "anime thighs": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "se acabo (feat. method man)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "stayin alive": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "super freaky girl": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "crete cypher intro (feat. lil yachty, camo!, draft day, dc2trill)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "all the same (feat. lil yachty, veeze)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "atrévete te te": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ambitionz az a ridah": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "drogba (joanna)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "toast": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "psycho killer 2005 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "incendeia": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "biking": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "whole lotta love 1990 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "humble. skrillex remix": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "three little birds": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "fuck tha police": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "danza kuduro": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "be my lover": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "beef": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sunbathing animal": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "japan": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ophelia remastered 2000": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "castelmaure": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "revolution 1 remastered 2009": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "deal wiv it": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "season of the witch": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "free music ii": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "le beirut": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "american tterroristt": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "beyond the sea (la mer)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "minor swing": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ayonha": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "wreckonize remix vocal": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sundrops": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cissy strut": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "if you want me to stay": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "michael irvin": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "paint it, black": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "eyes without a face": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "riders on the storm": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "lithium": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "semi charmed life": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "today 2011 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "black hole sun": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "immigrant song remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "in bloom": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "atm": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "butter": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "who knows": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "nuthin i can do is wrng": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "canned heat": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ghost dance": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sweet home": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "heights": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "kendrick lamar . bodies": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "coke white (feat. lil yachty)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "fish n steak (what it is) (feat. tyler, the creator & jozzy)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "west coast (feat. mynameisntjmack & 03 greedo)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "norf side (feat. tierra whack)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "me and madness": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "lifes as violent as you make it": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "4": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "not my bro": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "knocking": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "vicious": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "she knows too much": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "special k": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "thy mission": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "he got the gas (feat. jordan ward & rizz capolatti)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "mustard (with 6lack)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "jealousy": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "e85": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the manifesto (feat. trueno and proof)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "mob": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "lemon": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "brasilian skies": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "love is a drug": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the sweet escape": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "something serious": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sanjuro": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "salvaje": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "save a spot for me.": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "$ex appeal (feat. too $hort)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "hit the floor (with ski mask the slump god)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "lunatic interlude (with kingpin skinny pimp)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "house money": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "this morning (feat. arin ray & smino)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "teach me how to dougie x only time": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "chichi": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "friends again": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ca$ino": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sweet nothing (feat. florence welch)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "omg (feat. will.i.am)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "low (feat. t pain)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "digital love": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "unbothered": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "body": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "let's kick his ass!": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "circus circus free$tyle": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "i can't help it": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "chicken grease": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "mr. t": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "tiramisu": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "a day in the life 2017 mix": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bitch, don’t kill my vibe remix": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cosmic girl remastered 2013": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "something about us": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cz": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "in the morning (feat. thundercat & syd)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "full moon. (fall in tokyo) [bonus track]": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "planet god damn (feat. njomza)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "low down derrty blues": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "pure fantasy.": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "put it on hearts": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "voodoo chile": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "maggot brain": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "i talk to the wind": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "don't let me be misunderstood": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "freedom": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "fire": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "slide through my fingers": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the super natural": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "stranger's road": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the kid frankie": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "young millionaire .": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "made for this shit": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "high functioning": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "poor thang": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "themselves": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "pleasure’s mine": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "k9 (feat. sahbabii)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "fire in the hole": {
+      "alpha": 1.1299,
+      "beta": 0.998
+    },
+    "black napkins": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "part iii": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "why won't they talk to me?": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "my sweet lord 2014 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "smells like teen spirit": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "come as you are": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "safety": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "29 intro": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bring me dat (with femdot.)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "asa mitaka": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "dust": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cash flow": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "on tha ropes": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "it's the cash fault": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "george bondo (feat. conway the machine & benny the butcher)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bam": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the wind cries mary": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cold feet": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "still in love with you": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "rainy day, dream away": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the bug collector": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "last one left (feat. missy elliott & lil gray)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "something remastered 2009": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "song of the wind": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "balloon": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "big fish": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "don't be dumb / trip baby": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "josie": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "lucy in the sky with diamonds 2017 mix": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "catch me outside": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "day tripper remastered 2009": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "manic depression": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "you're gonna miss me (2008 remastered original mono lp version)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "black flag freestyle (with that mexican ot)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "guajira sicodélica": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "19": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "alech": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "with them": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "the last mall": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "eric after hours blues": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "who are you": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "shining star": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "let it go (2024 remaster)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "revolution remastered 2009": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "witchy woman 2013 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "cross eyed mary": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bodhisattva": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "like it this way": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "peg": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "you make loving fun 2004 remaster": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "spanish castle magic": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "fire on the water": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "magneto and titanium man remastered 2014": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "get into the party life": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "no trespassing": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "wishlist [with armani white]": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "punk rocky": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "20200820 turn my tv on": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "20200229 2": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "no photos": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "it's got to be you": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ode to viceroy": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "playa": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "robbery (feat. doechii)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "whiskey (release me) (feat. gorillaz & westside gunn)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "k.o.s. (determination)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "nights in the sun (feat. wizkid)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "verses from the abstract (feat. vinia mojica & ron carter)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bomb thrown": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "all that": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "dikembe!": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "escapism (gettin' free)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "ego trippin' (part two)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "bullshit": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "be (intro)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "vibes and stuff": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "she said": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "unknown from me": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "no pole": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "raf (feat. a$ap rocky, playboi carti, quavo, lil uzi vert & frank ocean)": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "a mirror for two voices": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "sun king remastered 2009": {
+      "alpha": 1.065,
+      "beta": 0.999
+    },
+    "billie jean": {
+      "alpha": 2.12,
+      "beta": 0.995
+    },
+    "love never felt so good": {
+      "alpha": 4.3432,
+      "beta": 0.985
+    },
+    "don’t matter to me (with michael jackson)": {
+      "alpha": 3.2344,
+      "beta": 0.99
+    }
+  },
+  "novelty_posterior": {
+    "alpha": 11.8847,
+    "beta": 3.4547
+  },
+  "popularity_posterior": {
+    "alpha": 9.3127,
+    "beta": 4.1499
+  },
+  "recent_positive_examples": [
+    {
+      "track_id": "6G8kHiVZ1jW7vHMPVRNZU0",
+      "track_name": "Don’t Matter To Me (with Michael Jackson)",
+      "artists": "Drake;Michael Jackson",
+      "weight": 1.5
+    },
+    {
+      "track_id": "48td6xvpokdYwvbl3JIiXP",
+      "track_name": "Love Never Felt So Good",
+      "artists": "Michael Jackson;Justin Timberlake",
+      "weight": 1.5
+    },
+    {
+      "track_id": "7J1uxwnxfQLu4APicE5Rnj",
+      "track_name": "Billie Jean",
+      "artists": "Michael Jackson",
+      "weight": 1.5
+    }
+  ],
+  "recent_negative_examples": [],
+  "session_prompt_history": [
+    "Now play some funky 70's vibes",
+    "Give me some funky michael jackson vibes"
+  ],
+  "liked_songs": [
+    {
+      "track_id": "6G8kHiVZ1jW7vHMPVRNZU0",
+      "track_name": "Don’t Matter To Me (with Michael Jackson)",
+      "artists": "Drake;Michael Jackson",
+      "album_name": "Scorpion",
+      "genre": "afrobeats"
+    },
+    {
+      "track_id": "48td6xvpokdYwvbl3JIiXP",
+      "track_name": "Love Never Felt So Good",
+      "artists": "Michael Jackson;Justin Timberlake",
+      "album_name": "XSCAPE",
+      "genre": "afrobeats"
+    },
+    {
+      "track_id": "7J1uxwnxfQLu4APicE5Rnj",
+      "track_name": "Billie Jean",
+      "artists": "Michael Jackson",
+      "album_name": "Thriller",
+      "genre": "afrobeats"
+    },
+    {
+      "track_id": "7GApeoo08HHJ70980XyPZz",
+      "track_name": "have to.",
+      "artists": "Brent Faiyaz",
+      "album_name": "Icon",
+      "genre": ""
+    },
+    {
+      "track_id": "4jyyma8YdFC4S4llusSFRu",
+      "track_name": "butterflies.",
+      "artists": "Brent Faiyaz",
+      "album_name": "Icon",
+      "genre": ""
+    },
+    {
+      "track_id": "1UnpwO2iy4KXj93e6Q1UYE",
+      "track_name": "I've Been Waiting for Her",
+      "artists": "Mac DeMarco",
+      "album_name": "Another One",
+      "genre": ""
+    },
+    {
+      "track_id": "2iZ9yiTcL1iywzSUZxlJrZ",
+      "track_name": "other side.",
+      "artists": "Brent Faiyaz",
+      "album_name": "Icon",
+      "genre": ""
+    },
+    {
+      "track_id": "5sHeIGDbdzw8DeO57XZKIy",
+      "track_name": "Good Flirts (feat. Kendrick Lamar & Momo Boyd)",
+      "artists": "Baby Keem;Kendrick Lamar;Momo Boyd",
+      "album_name": "Ca$ino",
+      "genre": ""
+    },
+    {
+      "track_id": "1GvCpaj3nkpLTzmgMnlsYp",
+      "track_name": "There It Is",
+      "artists": "Sunny Lou;414bigfrank;Run Along Forever",
+      "album_name": "There It Is",
+      "genre": ""
+    },
+    {
+      "track_id": "4NfIGw7P58UPEDPn5KaZ4E",
+      "track_name": "Don't Look At Numbers - Remix",
+      "artists": "Tony Shhnow;Brent Faiyaz",
+      "album_name": "Don't Look At Numbers",
+      "genre": ""
+    },
+    {
+      "track_id": "57cZFx3KlHmx0CNNYbWO8u",
+      "track_name": "Wah-Wah - 2014 Remaster",
+      "artists": "George Harrison",
+      "album_name": "All Things Must Pass (2014 Remaster)",
+      "genre": ""
+    },
+    {
+      "track_id": "7eqoqGkKwgOaWNNHx90uEZ",
+      "track_name": "Nights",
+      "artists": "Frank Ocean",
+      "album_name": "Blonde",
+      "genre": ""
+    },
+    {
+      "track_id": "3mLDq0hbHkafZoy4GvF7EG",
+      "track_name": "KRYPTONITE",
+      "artists": "Don Toliver",
+      "album_name": "HARDSTONE PSYCHO",
+      "genre": ""
+    },
+    {
+      "track_id": "5lw8Mgb4LyhriPIC86gV6e",
+      "track_name": "RNP (feat. Anderson .Paak)",
+      "artists": "Cordae;Anderson .Paak",
+      "album_name": "The Lost Boy",
+      "genre": ""
+    },
+    {
+      "track_id": "7EAMXbLcL0qXmciM5SwMh2",
+      "track_name": "Heart To Heart",
+      "artists": "Mac DeMarco",
+      "album_name": "Here Comes The Cowboy",
+      "genre": ""
+    },
+    {
+      "track_id": "7bwLHhqhRu0fVTM3aaeK9V",
+      "track_name": "Birds & the Bees",
+      "artists": "Baby Keem",
+      "album_name": "Ca$ino",
+      "genre": ""
+    },
+    {
+      "track_id": "3KH2Gs1noFVM6AELjq03vc",
+      "track_name": "Gamma (need the <3)",
+      "artists": "Earl Sweatshirt",
+      "album_name": "Live Laugh Love",
+      "genre": ""
+    },
+    {
+      "track_id": "6FI3RJ58Ztl0X1VtA6pVs9",
+      "track_name": "Oh My God (feat. Busta Rhymes)",
+      "artists": "A Tribe Called Quest;Busta Rhymes",
+      "album_name": "Midnight Marauders",
+      "genre": ""
+    },
+    {
+      "track_id": "64TJKMfx0QxpuR7rTXL05c",
+      "track_name": "Treasure In The Hills",
+      "artists": "Leon Thomas",
+      "album_name": "Electric Dusk",
+      "genre": ""
+    },
+    {
+      "track_id": "1vHTfYiYGGwgqM2XmMCtZY",
+      "track_name": "Breaking Point",
+      "artists": "Leon Thomas",
+      "album_name": "Electric Dusk",
+      "genre": ""
+    },
+    {
+      "track_id": "35iNiYHSzx3sv6XuqYh8HJ",
+      "track_name": "At All",
+      "artists": "KAYTRANADA",
+      "album_name": "At All / Hilarity Duff EP",
+      "genre": ""
+    },
+    {
+      "track_id": "22c6Yop5YVEAhw8UG6O1W1",
+      "track_name": "My Muse",
+      "artists": "Leon Thomas",
+      "album_name": "PHOLKS",
+      "genre": ""
+    },
+    {
+      "track_id": "0YuyVhWgiZck9Ha5WXS61Q",
+      "track_name": "YouUgly (with Westside Gunn)",
+      "artists": "JID;Westside Gunn",
+      "album_name": "God Does Like Ugly (Preluxe Edition)",
+      "genre": ""
+    },
+    {
+      "track_id": "5JG9zYkmhPnc6X8nyO3Bv1",
+      "track_name": "HEEL",
+      "artists": "Leon Thomas",
+      "album_name": "MUTT Deluxe: HEEL",
+      "genre": ""
+    },
+    {
+      "track_id": "2VxBaSKDmZlUoOg0lnpt2f",
+      "track_name": "Party Down - Pt. 1",
+      "artists": "Little Beaver",
+      "album_name": "Party Down",
+      "genre": ""
+    },
+    {
+      "track_id": "608xszaAxVh4m7NcKJiAbF",
+      "track_name": "One of These Nights - 2013 Remaster",
+      "artists": "Eagles",
+      "album_name": "One of These Nights (2013 Remaster)",
+      "genre": ""
+    },
+    {
+      "track_id": "4whkhyXTrTgHKZzkUvdwoq",
+      "track_name": "My Old Ways",
+      "artists": "Tame Impala",
+      "album_name": "Deadbeat",
+      "genre": ""
+    },
+    {
+      "track_id": "5EsKjjNxjKeDjlxqdSs4X4",
+      "track_name": "SPACE INVADER",
+      "artists": "KAYTRANADA",
+      "album_name": "AIN'T NO DAMN WAY!",
+      "genre": ""
+    },
+    {
+      "track_id": "1hJFOcej4wmWIM0yILj0s3",
+      "track_name": "Gz",
+      "artists": "JID",
+      "album_name": "God Does Like Ugly (Preluxe Edition)",
+      "genre": ""
+    },
+    {
+      "track_id": "3OxdXYsQec4nlrluOXFb09",
+      "track_name": "DON'T WORRY BABE / I GOT U BABE",
+      "artists": "KAYTRANADA",
+      "album_name": "AIN'T NO DAMN WAY!",
+      "genre": ""
+    },
+    {
+      "track_id": "4LqkSEGv7SpGzruiSTkfL5",
+      "track_name": "Afterthought",
+      "artists": "Tame Impala",
+      "album_name": "Deadbeat",
+      "genre": ""
+    },
+    {
+      "track_id": "2Hhedou9SP7mPPdgyC3aKf",
+      "track_name": "Feel My Funk",
+      "artists": "The Growlers",
+      "album_name": "Feel My Funk",
+      "genre": ""
+    },
+    {
+      "track_id": "4oLXDa1WE78vQvNcRohIuX",
+      "track_name": "TRIPPIN",
+      "artists": "Sturdyyoungin;Ohthatsmizz;ZEDDY WILL",
+      "album_name": "Rookie of the Year",
+      "genre": ""
+    },
+    {
+      "track_id": "277K8GOv27Pq3qS4IKSRoW",
+      "track_name": "NOT FAIR",
+      "artists": "Leon Thomas",
+      "album_name": "MUTT Deluxe: HEEL",
+      "genre": ""
+    },
+    {
+      "track_id": "3kaUhVC1e1zVFdPkyJNgrx",
+      "track_name": "Buckets",
+      "artists": "41;Kyle Richh;POODEE",
+      "album_name": "Buckets",
+      "genre": ""
+    },
+    {
+      "track_id": "2xsTsnA5QOFCnFXdEHGkli",
+      "track_name": "STAY HERE 4 LIFE (feat. Brent Faiyaz)",
+      "artists": "A$AP Rocky;Brent Faiyaz",
+      "album_name": "Don't Be Dumb",
+      "genre": ""
+    },
+    {
+      "track_id": "6CTnLPc0KLaumnvPBEztdO",
+      "track_name": "GOODBYE BITCH!",
+      "artists": "KAYTRANADA",
+      "album_name": "AIN'T NO DAMN WAY!",
+      "genre": ""
+    },
+    {
+      "track_id": "3tFed7YsjGnIfxeLEQwx3R",
+      "track_name": "Sticky (feat. GloRilla, Sexyy Red & Lil Wayne)",
+      "artists": "Tyler, The Creator;GloRilla;Sexyy Red;Lil Wayne",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "32fwe7MW5koort1Ua3YFx6",
+      "track_name": "Terrapin",
+      "artists": "Clairo",
+      "album_name": "Charm",
+      "genre": ""
+    },
+    {
+      "track_id": "0VaeksJaXy5R1nvcTMh3Xk",
+      "track_name": "Darling, I (feat. Teezo Touchdown)",
+      "artists": "Tyler, The Creator;Teezo Touchdown",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "0pvZCv4JOS5WBu7JITYef6",
+      "track_name": "I Hope You Find Your Way Home",
+      "artists": "Tyler, The Creator",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "6QlSPjiXHc1XwGKeEls6Gh",
+      "track_name": "Echo",
+      "artists": "Clairo",
+      "album_name": "Charm",
+      "genre": ""
+    },
+    {
+      "track_id": "6HubPIhCjRxkwR2zJa2ZLB",
+      "track_name": "FIJI (feat. Cruza)",
+      "artists": "Eem Triplin;Cruza",
+      "album_name": "FIJI (feat. Cruza)",
+      "genre": ""
+    },
+    {
+      "track_id": "1QoyuMHNBe7lg3YW4Qtll4",
+      "track_name": "St. Chroma (feat. Daniel Caesar)",
+      "artists": "Tyler, The Creator;Daniel Caesar",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "4BSR9I4ExlCJdXJo2GpBD5",
+      "track_name": "Take Your Mask Off (feat. Daniel Caesar & LaToiya Williams)",
+      "artists": "Tyler, The Creator;Daniel Caesar;LaToiya Williams",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "7K2qvU3tywyWUKlqwGFs1t",
+      "track_name": "I DO",
+      "artists": "Leon Thomas",
+      "album_name": "MUTT Deluxe: HEEL",
+      "genre": ""
+    },
+    {
+      "track_id": "2aYHxnMF2umAavtgBvmkY1",
+      "track_name": "Thought I Was Dead (feat. ScHoolboy Q & Santigold)",
+      "artists": "Tyler, The Creator;ScHoolboy Q;Santigold",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    },
+    {
+      "track_id": "6ie0uyyvOKTTuIFBMPiNIl",
+      "track_name": "Judge Judy",
+      "artists": "Tyler, The Creator",
+      "album_name": "CHROMAKOPIA",
+      "genre": ""
+    }
+  ],
+  "spotify_art_cache": {
+    "7J1uxwnxfQLu4APicE5Rnj": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b27332a7d87248d1b75463483df5",
+      "spotify_url": "https://open.spotify.com/track/7J1uxwnxfQLu4APicE5Rnj",
+      "preview_url": null
+    },
+    "48td6xvpokdYwvbl3JIiXP": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b27335f36cb686b0d5a12ab3a9f0",
+      "spotify_url": "https://open.spotify.com/track/48td6xvpokdYwvbl3JIiXP",
+      "preview_url": null
+    },
+    "6G8kHiVZ1jW7vHMPVRNZU0": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b273f907de96b9a4fbc04accc0d5",
+      "spotify_url": "https://open.spotify.com/track/6G8kHiVZ1jW7vHMPVRNZU0",
+      "preview_url": null
+    },
+    "4IT6vDuKprKl6jyVndlY8V": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b27332a7d87248d1b75463483df5",
+      "spotify_url": "https://open.spotify.com/track/4IT6vDuKprKl6jyVndlY8V",
+      "preview_url": null
+    },
+    "5BKKy9fIJL5uM9fz1SnqyP": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b27335f36cb686b0d5a12ab3a9f0",
+      "spotify_url": "https://open.spotify.com/track/5BKKy9fIJL5uM9fz1SnqyP",
+      "preview_url": null
+    },
+    "3BovdzfaX4jb5KFQwoPfAw": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b27332a7d87248d1b75463483df5",
+      "spotify_url": "https://open.spotify.com/track/3BovdzfaX4jb5KFQwoPfAw",
+      "preview_url": null
+    },
+    "3wuCCNCnBhJlwkIJTBZFiv": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b273b4a878f008a0eda552446701",
+      "spotify_url": "https://open.spotify.com/track/3wuCCNCnBhJlwkIJTBZFiv",
+      "preview_url": null
+    },
+    "7oOOI85fVQvVnK5ynNMdW7": {
+      "image_url": "https://i.scdn.co/image/ab67616d0000b2732b74bf21c7e4f56758610949",
+      "spotify_url": "https://open.spotify.com/track/7oOOI85fVQvVnK5ynNMdW7",
+      "preview_url": null
+    }
+  },
+  "spotify_user_seeded": true,
+  "spotify_user_summary": {
+    "artists": [
+      "brent faiyaz",
+      "don toliver",
+      "a$ap rocky",
+      "tyler, the creator",
+      "baby keem"
+    ],
+    "genres": [],
+    "tracks": [
+      "have to.",
+      "butterflies.",
+      "i've been waiting for her",
+      "other side.",
+      "good flirts (feat. kendrick lamar & momo boyd)"
+    ]
+  },
+  "spotify_saved_track_ids": [
+    "03auLpFLdCv4HozP4pQseu",
+    "07ZC0qJ896Hc3VPPPq1ckD",
+    "07dmAmDq0W6y0dH5t2utZO",
+    "09101SuZsYfNIjVLwq8PdU",
+    "0B6oBwvkyLptGexpwJVz7c",
+    "0CAfXk7DXMnon4gLudAp7J",
+    "0EqH5Wz93cJtfUGv3vtQPY",
+    "0FlcmZ13DGRmscCroro9GO",
+    "0GhNudbnGU1RULJkffiWyg",
+    "0JprHr0DgLQdKiEf6DxUJZ",
+    "0KZodeWxqxd88F9wY1cqgs",
+    "0NDjQezJaEC1KX9TfwEfzf",
+    "0PV4VQCmE6Ujssr1bnswdF",
+    "0RW2GdRcn5qTrZPhXQLqML",
+    "0RgcOUQg4qYAEt9RIdf3oB",
+    "0VtmcwKYJBUD4imySWndvb",
+    "0WSlOSMLJWoWUpWci9nnRb",
+    "0auKlivXpm76wR63mMJ3pR",
+    "0bzFaHiymbvjmIDKf6XAbS",
+    "0cZ9HBGWLZJS7UHCgWXOTZ",
+    "0dRMqHJre73e9V0wOfwV6u",
+    "0eaVIYo2zeOaGJeqZ5TwYz",
+    "0gl5Yt7KlvwIb8LmPHmBTc",
+    "0h2IdTBpU5VfXmEjQ1F2jF",
+    "0hCB0YR03f6AmQaHbwWDe8",
+    "0j8zJzaQ2g86y5MzvMocRP",
+    "0n8cb0suMjVHae89k5OS3n",
+    "0oucyVmfZtpU608vpYA1rs",
+    "0pNeVovbiZHkulpGeOx1Gj",
+    "0pUVeEgZuNyFzIMKp67RbS",
+    "0tISnxqgVmxqhVghsTi2Rr",
+    "0u5aO1GYsIhAWCPuXdwnak",
+    "0xwG5stzrc5B70TycPwenY",
+    "0zU1YeSFKtFx9lh7y05giH",
+    "0zqKcIVMt9jO0pt7FTgoGx",
+    "11aFVmFy8903RwDx4ohQiq",
+    "14XWXWv5FoCbFzLksawpEe",
+    "185EiYT58r61hdnHxjKVzT",
+    "18qhv7DD1sEpgWffovGnhn",
+    "19cgfclwwxsGGwaEbOn0B2",
+    "1AXsHbdIYx2OyKmdOcIL5T",
+    "1CZR9j4cF4r2uuCpiMdsX5",
+    "1E6bITYDo5DZDF9zMaN4rS",
+    "1EUrIO8vLRkzPgPcqIi4Jw",
+    "1F1OWM6IeFXhJjnkLxJUur",
+    "1GuLgNKd4lrI1vugkxMCAX",
+    "1GvCpaj3nkpLTzmgMnlsYp",
+    "1HibhNhwk2tljwC4BGGLXV",
+    "1JvZ1iMTrg8lEWcpkHen7p",
+    "1KucENjrvmAEkSVjAgkGH2",
+    "1NeLwFETswx8Fzxl2AFl91",
+    "1NmtwhaDaO3ADq8NBicYnq",
+    "1QgLpUJsmrLG61KDVGT0Ux",
+    "1T0CdfKPKb1gJi4vCKpZ9C",
+    "1UnpwO2iy4KXj93e6Q1UYE",
+    "1VNZ7LWT495ICAO4CvOaTX",
+    "1WUBWl3jNNYo0hrPTrA5D0",
+    "1aOzDhi5a1RWWRy5dmYA8I",
+    "1bM50INir8voAkVoKuvEUI",
+    "1ckdQtZyQ4bRrzztt8H3TP",
+    "1i6N76fftMZhijOzFQ5ZtL",
+    "1iBZqPmS2HjeTm9oRtvwqT",
+    "1iqYqVkzPJAQ6Kgc0Kn2I5",
+    "1jo6zavGHbrqlvts6xp8AX",
+    "1lq2ADWqMMsEqfLeGAyKCf",
+    "1muR6CRm9uQ76HaJ7YBQaa",
+    "1nhNz1tWU8p5WvFAAgFW2h",
+    "1oPBorQrE4nWuyo2z4bNoQ",
+    "1q8NdCAQ9QUjpYiqzdd3mv",
+    "1vITRP5ITGjLK5v8LjjVo0",
+    "22Yq5tkMN8JE7h1Bq3pWHS",
+    "23IJ5wLRhEZ9DOuia5mPiZ",
+    "24LS4lQShWyixJ0ZrJXfJ5",
+    "28H3wOEKsaEa8NBEYCLl4j",
+    "2BydLQAh7CUIFvSEqAMc4x",
+    "2DVswRuJlXu4QiZQfOoIx7",
+    "2GHKo6nrSjruvBEQbzD7Fw",
+    "2JfyjfqbQrTXMzH8n0fOht",
+    "2KFE98Iw0X23sf4vJYcbLH",
+    "2N1D5t5zkvlNElbH9q0vBv",
+    "2OEUK62dNUhQtyAGoGzmOn",
+    "2OjJ5v66ksCRo6uTaR57Y5",
+    "2TMmxS4qWwfZ5h2xwaDFsY",
+    "2VEZx7NWsZ1D0eJ4uv5Fym",
+    "2YodwKJnbPyNKe8XXSE9V7",
+    "2ZZMbEXXq9hPReD2alSNxD",
+    "2avmI53DtuX5r32jnx3rxt",
+    "2ctl2YVjBnxDO3OMf1Haay",
+    "2d1aFuYKVqMocoSLXhwh1l",
+    "2fMVFTCEBPP8htrlDzpxtP",
+    "2fx1hkMHTVdDim274rwoPa",
+    "2iIRl5jf9beA2ExZWzn2nt",
+    "2iZ9yiTcL1iywzSUZxlJrZ",
+    "2l0zEyQ0XVg0YYwbL3Xz9Y",
+    "2q0VexHJirnUPnEOhr2DxK",
+    "2xsTsnA5QOFCnFXdEHGkli",
+    "30HCB1FoE77IfGRyNv4eFq",
+    "30OIM2sLquWm3Vbpl1Fz6F",
+    "34miSNKQ0xN7EG8zzzaFzI",
+    "38HkYfvnhHLLB5Yaj2VpZg",
+    "38IxrSZXvtQr1cRsxe9u2v",
+    "3B4cjvGlPvyBLNG3AzEgkZ",
+    "3DC6AWwtPhlhsBOm4pFkt1",
+    "3EytmMZxK0woRgbh2NxenS",
+    "3Gi5nk0bgPcPVgUK4nrBY8",
+    "3JO3CNuCxwuwlpEjjCnDZN",
+    "3KH2Gs1noFVM6AELjq03vc",
+    "3KrepKtDyPoP8I1t7BpDSw",
+    "3ST33QbyCHtNq6sGVEjgZO",
+    "3UDmHZcBTQp8Iu8droNtUl",
+    "3VW6HJYa5l0uzGcCRA222P",
+    "3XmHd0NqN5O4e7Vnv8fb8q",
+    "3YTgjGZ58t6K7o9NroTGCD",
+    "3Zm2gmffkeAwqLQxFOEsYo",
+    "3bMc9oRaUWnojCrYTUXXcQ",
+    "3cSFKd5QwPP0Of02tjSzDK",
+    "3eRE1KwnUma75nu1HhoNY4",
+    "3f5JtAsGRIXN8pSAeTi6vA",
+    "3gngGQld3ErvphXxsFiulR",
+    "3gtWoU0vj1dYhHH1Ng8Z92",
+    "3hNUYt4dMM9RhcWmty8oKF",
+    "3lfjd8A0DkB84yrvjzkbry",
+    "3mLDq0hbHkafZoy4GvF7EG",
+    "3ndhPhaWdICplZVrC4NeCR",
+    "3nmd5lsusqNE1bhcpHwAOH",
+    "3pOIwaY33P8qCmWCcJ2CSy",
+    "3rZrK0m6FsVwNBS0SFpivX",
+    "3sJLoIc9y1b4gKAP8ZNsR9",
+    "3sXsbaZlsTv2iJiEntsgM5",
+    "3sqP75PDhbIta3VxaZa7Gw",
+    "3uyODN4WPyhs8TJRuMfhwF",
+    "3vSn1frPgFcRXrjWOfhMLl",
+    "3vzSGr8Anj3SLaMrp613Gm",
+    "3wlPIgXbSXh9U1JebpokAJ",
+    "3wn5Rw7VBqwP0vAQtjMhOS",
+    "3x6CEyquRREaQ9ZBbBhrGe",
+    "3y4J1NqqwJhxo0xhaBFMCN",
+    "42et6fnHCw1HIPSrdPprMl",
+    "42uCM9saw5B3bCjEFLROlE",
+    "436yrzQWA32vb1sTZKXg9r",
+    "45nwypnUNQs3AA77RjHPiw",
+    "46efwIlSpvdURIubZCs3jC",
+    "47oS7xB31QQUyPCgHpM3VZ",
+    "49ztutPq82dK8AYDO2OkN7",
+    "4C6Uex2ILwJi9sZXRdmqXp",
+    "4E0teOQQQwagLVvQ7VfYm1",
+    "4F3AZKEJubvPsl0hBArVBW",
+    "4FVWfJa3MtyBDdQ9gPFWl2",
+    "4MdEYuoGhG2RTG3erOiu2H",
+    "4NfIGw7P58UPEDPn5KaZ4E",
+    "4Ngjl2bK9B4iQI98DBano0",
+    "4P5KoWXOxwuobLmHXLMobV",
+    "4PpuH4mxL0rD35mOWaLoKS",
+    "4UFPN3ZyAsPkFwx5DFg5yF",
+    "4ceQbaldGMXwkaio2O99ug",
+    "4isHeZRxdYw7IgGvl8OPwq",
+    "4jpYCWEXF3tYlWrIEyVnxm",
+    "4jyyma8YdFC4S4llusSFRu",
+    "4m1mqQuy34Nzh0480VR364",
+    "4nwKdZID1ht0lDBJ5h2p87",
+    "4r0p0IhfK7TEHFP6v89Vwt",
+    "4rgwri7LajWVZvdj2N81SS",
+    "4tiKa5LHDcuWEIZzROACtG",
+    "4xdHI4eFNst0vTZuuKrWjr",
+    "4zzY7s6PKnMFIQ3ZNfHzGh",
+    "554JCidYYLyngoK4jPxpfV",
+    "558oD8tdaK2KmUBm7CgINa",
+    "56KPaXhRx8U6YB2stCJEgY",
+    "57cZFx3KlHmx0CNNYbWO8u",
+    "59ixjAY05WENR6TitS0EKh",
+    "5DuaMIvmPyT3oEvuccx6JO",
+    "5FYaSV8TLF7qvonB1BDOw0",
+    "5H6Jp0syB5yEPk7SWYdlmk",
+    "5HCTbcF18u5DcYNwEWWf3n",
+    "5L4Oj3LmIzN2hW6aI81sE8",
+    "5LI7PoHEolR8plrf3I16sq",
+    "5PTG6rrL6EPFD9E2QMI2pl",
+    "5Stg0rHL1MdBvLpEz4bBA7",
+    "5Th1SPySWgYlkXXC6wLMwL",
+    "5UmjHuYRItemped2xd3Qx4",
+    "5WJU527RQNyMLuKecjsL8V",
+    "5Yy9sRRcNQakNfR74hj5Td",
+    "5dRHgznMSoyqJO7bXqnxTx",
+    "5emxp4RqsF6QoAWXW2Afrk",
+    "5g9lS8deSIxItFBmZRC4vN",
+    "5ghIJDpPoe3CfHMGu71E6T",
+    "5iTfd45UuJzCAfabvkLM2I",
+    "5k2X5nAN0efhoZ9OC3flGo",
+    "5lKBvDIR941yvwBloegnJP",
+    "5lw8Mgb4LyhriPIC86gV6e",
+    "5n8Aro6j1bEGIy7Tpo7FV7",
+    "5nVE45ithgyVocZp5XLAk6",
+    "5sC37XO1IYdnZcEdoJTKRZ",
+    "5sHeIGDbdzw8DeO57XZKIy",
+    "5sS8ndoNMQaPEYaTKL5uFa",
+    "5ubvP9oKmxLUVq506fgLhk",
+    "5waTXjl4V7YBw1Bo4CsjlM",
+    "5xEDRg4tI8ixoAvbrupsEg",
+    "61uFtDdDMle65347IIuF7r",
+    "62LMgHQvo7JmH1TYbnqJyj",
+    "63T7DJ1AFDD6Bn8VzG6JE8",
+    "65ES1qwOB577ZnTkizMXJJ",
+    "66ZcOcouenzZEnzTJvoFmH",
+    "689jX0Jm6VUwsoZlgEjwFQ",
+    "69AHqDMcDKyxKL1lNNCIve",
+    "6BZFzi6roce3ZBQ6dq13f7",
+    "6DH13QYXK7lKkYHSU88N48",
+    "6DXLO8LndZMVOHM0wNbpzg",
+    "6FI3RJ58Ztl0X1VtA6pVs9",
+    "6Gie6gMZwfiaGreQTyGkhC",
+    "6IM45SqAURH6PrvziDs1RQ",
+    "6Iuh3vNjpWhSeHM3RZgzQL",
+    "6MBZyLisOWTChcevgFqwVr",
+    "6MOEQCtAWNSCmvg3SFKF5y",
+    "6OOmGlWhCr3bq4cYpnwPnj",
+    "6PXnHU4yquX8TQmQ4VXXeY",
+    "6WZjjf4mKurHPC5BhdGwet",
+    "6daLiRlW5V69shUA571Vwy",
+    "6eL1ncVDtQHgSm3E288TS7",
+    "6fACn9e0wdMIWZa9CZJym8",
+    "6gHzcDHbcoGgvoGAtcTq94",
+    "6gjDPTEXEY7YIpIFBvDbj3",
+    "6kl1qtQXQsFiIWRBK24Cfp",
+    "6pCgZDgO4bUJGvtTr0hU5V",
+    "6pbxPH9L6iXSYw4Xgq23RY",
+    "6qJjgYxhZ3gBTm4TI8t41e",
+    "6rgmHos0kapmml7VwqSrXS",
+    "6xE6ZWzK1YDDSYzqOCoQlz",
+    "6xNkEcbvpPcdSOFKFXNpFL",
+    "6y0Etr2KJr0sdcEp7ajoUK",
+    "6zrsmzrMoxNkXEQLubCWtA",
+    "758mQT4zzlvBhy9PvNePwC",
+    "75FYqcxt1YEAtqDLrOeIJn",
+    "76cXvm18FAABxyhiU3m3WF",
+    "77ybhTvFC7kr5IeUqBP2qp",
+    "78lgmZwycJ3nzsdgmPPGNx",
+    "7ALEBJ8LOQqXVJ2tqnXtoH",
+    "7GApeoo08HHJ70980XyPZz",
+    "7LcmuGeSXQzQlteW3yGtWb",
+    "7ab0dshQmFwArA3EKBOcs5",
+    "7bd0BC9RNR6GxJsM3pRwBw",
+    "7bwLHhqhRu0fVTM3aaeK9V",
+    "7c5JxJWGMJqG0IYABA04WS",
+    "7cjoZVmWe2xsGR4wcXiV2v",
+    "7eEnuNVAHQXEwg18zZnmdL",
+    "7emVwhF4OMemAT65nbpuZO",
+    "7eqoqGkKwgOaWNNHx90uEZ",
+    "7iXF2W9vKmDoGAhlHdpyIa",
+    "7lOWMm3udPeBvu5FDmpC8h",
+    "7sd72KZS8D59g5NmhxyHpJ"
+  ],
+  "spotify_recent_track_ids": [],
+  "spotify_top_track_ids": [
+    "03auLpFLdCv4HozP4pQseu",
+    "07ZC0qJ896Hc3VPPPq1ckD",
+    "07dmAmDq0W6y0dH5t2utZO",
+    "09101SuZsYfNIjVLwq8PdU",
+    "0B6oBwvkyLptGexpwJVz7c",
+    "0CAfXk7DXMnon4gLudAp7J",
+    "0EqH5Wz93cJtfUGv3vtQPY",
+    "0FlcmZ13DGRmscCroro9GO",
+    "0GhNudbnGU1RULJkffiWyg",
+    "0J119Oas2ox6JTTHUGZxHN",
+    "0JprHr0DgLQdKiEf6DxUJZ",
+    "0KZodeWxqxd88F9wY1cqgs",
+    "0NDjQezJaEC1KX9TfwEfzf",
+    "0PV4VQCmE6Ujssr1bnswdF",
+    "0RW2GdRcn5qTrZPhXQLqML",
+    "0RgcOUQg4qYAEt9RIdf3oB",
+    "0VaeksJaXy5R1nvcTMh3Xk",
+    "0VtmcwKYJBUD4imySWndvb",
+    "0WSlOSMLJWoWUpWci9nnRb",
+    "0YuyVhWgiZck9Ha5WXS61Q",
+    "0auKlivXpm76wR63mMJ3pR",
+    "0bzFaHiymbvjmIDKf6XAbS",
+    "0cZ9HBGWLZJS7UHCgWXOTZ",
+    "0dRMqHJre73e9V0wOfwV6u",
+    "0eaVIYo2zeOaGJeqZ5TwYz",
+    "0gl5Yt7KlvwIb8LmPHmBTc",
+    "0h2IdTBpU5VfXmEjQ1F2jF",
+    "0hCB0YR03f6AmQaHbwWDe8",
+    "0j8zJzaQ2g86y5MzvMocRP",
+    "0mRbKcvmbbUtfFyfeFHCJa",
+    "0n8cb0suMjVHae89k5OS3n",
+    "0oucyVmfZtpU608vpYA1rs",
+    "0pNeVovbiZHkulpGeOx1Gj",
+    "0pUVeEgZuNyFzIMKp67RbS",
+    "0pvZCv4JOS5WBu7JITYef6",
+    "0tISnxqgVmxqhVghsTi2Rr",
+    "0u5aO1GYsIhAWCPuXdwnak",
+    "0xwG5stzrc5B70TycPwenY",
+    "0zU1YeSFKtFx9lh7y05giH",
+    "0zqKcIVMt9jO0pt7FTgoGx",
+    "11aFVmFy8903RwDx4ohQiq",
+    "14XWXWv5FoCbFzLksawpEe",
+    "185EiYT58r61hdnHxjKVzT",
+    "18qhv7DD1sEpgWffovGnhn",
+    "19cgfclwwxsGGwaEbOn0B2",
+    "1AXsHbdIYx2OyKmdOcIL5T",
+    "1CZR9j4cF4r2uuCpiMdsX5",
+    "1E6bITYDo5DZDF9zMaN4rS",
+    "1EUrIO8vLRkzPgPcqIi4Jw",
+    "1F1OWM6IeFXhJjnkLxJUur",
+    "1GuLgNKd4lrI1vugkxMCAX",
+    "1GvCpaj3nkpLTzmgMnlsYp",
+    "1HibhNhwk2tljwC4BGGLXV",
+    "1JvZ1iMTrg8lEWcpkHen7p",
+    "1KucENjrvmAEkSVjAgkGH2",
+    "1NeLwFETswx8Fzxl2AFl91",
+    "1NmtwhaDaO3ADq8NBicYnq",
+    "1QgLpUJsmrLG61KDVGT0Ux",
+    "1QoyuMHNBe7lg3YW4Qtll4",
+    "1T0CdfKPKb1gJi4vCKpZ9C",
+    "1UnpwO2iy4KXj93e6Q1UYE",
+    "1VNZ7LWT495ICAO4CvOaTX",
+    "1WUBWl3jNNYo0hrPTrA5D0",
+    "1aOzDhi5a1RWWRy5dmYA8I",
+    "1bM50INir8voAkVoKuvEUI",
+    "1ckdQtZyQ4bRrzztt8H3TP",
+    "1hJFOcej4wmWIM0yILj0s3",
+    "1i6N76fftMZhijOzFQ5ZtL",
+    "1iBZqPmS2HjeTm9oRtvwqT",
+    "1iqYqVkzPJAQ6Kgc0Kn2I5",
+    "1jo6zavGHbrqlvts6xp8AX",
+    "1lq2ADWqMMsEqfLeGAyKCf",
+    "1muR6CRm9uQ76HaJ7YBQaa",
+    "1nhNz1tWU8p5WvFAAgFW2h",
+    "1oPBorQrE4nWuyo2z4bNoQ",
+    "1q8NdCAQ9QUjpYiqzdd3mv",
+    "1vHTfYiYGGwgqM2XmMCtZY",
+    "1vITRP5ITGjLK5v8LjjVo0",
+    "22Yq5tkMN8JE7h1Bq3pWHS",
+    "22c6Yop5YVEAhw8UG6O1W1",
+    "23IJ5wLRhEZ9DOuia5mPiZ",
+    "24LS4lQShWyixJ0ZrJXfJ5",
+    "277K8GOv27Pq3qS4IKSRoW",
+    "28H3wOEKsaEa8NBEYCLl4j",
+    "2BydLQAh7CUIFvSEqAMc4x",
+    "2DVswRuJlXu4QiZQfOoIx7",
+    "2GHKo6nrSjruvBEQbzD7Fw",
+    "2Hhedou9SP7mPPdgyC3aKf",
+    "2JfyjfqbQrTXMzH8n0fOht",
+    "2KFE98Iw0X23sf4vJYcbLH",
+    "2N1D5t5zkvlNElbH9q0vBv",
+    "2OEUK62dNUhQtyAGoGzmOn",
+    "2OjJ5v66ksCRo6uTaR57Y5",
+    "2TMmxS4qWwfZ5h2xwaDFsY",
+    "2VEZx7NWsZ1D0eJ4uv5Fym",
+    "2VxBaSKDmZlUoOg0lnpt2f",
+    "2YodwKJnbPyNKe8XXSE9V7",
+    "2ZZMbEXXq9hPReD2alSNxD",
+    "2aYHxnMF2umAavtgBvmkY1",
+    "2avmI53DtuX5r32jnx3rxt",
+    "2ctl2YVjBnxDO3OMf1Haay",
+    "2d1aFuYKVqMocoSLXhwh1l",
+    "2fMVFTCEBPP8htrlDzpxtP",
+    "2fx1hkMHTVdDim274rwoPa",
+    "2iIRl5jf9beA2ExZWzn2nt",
+    "2iZ9yiTcL1iywzSUZxlJrZ",
+    "2l0zEyQ0XVg0YYwbL3Xz9Y",
+    "2q0VexHJirnUPnEOhr2DxK",
+    "2xsTsnA5QOFCnFXdEHGkli",
+    "30HCB1FoE77IfGRyNv4eFq",
+    "30OIM2sLquWm3Vbpl1Fz6F",
+    "32fwe7MW5koort1Ua3YFx6",
+    "34miSNKQ0xN7EG8zzzaFzI",
+    "35D1RA5uVFVhMc1qX80TaQ",
+    "35iNiYHSzx3sv6XuqYh8HJ",
+    "38HkYfvnhHLLB5Yaj2VpZg",
+    "38IxrSZXvtQr1cRsxe9u2v",
+    "3B4cjvGlPvyBLNG3AzEgkZ",
+    "3DC6AWwtPhlhsBOm4pFkt1",
+    "3EWaU5exMayFzQMkIfTX7w",
+    "3EytmMZxK0woRgbh2NxenS",
+    "3Gi5nk0bgPcPVgUK4nrBY8",
+    "3JO3CNuCxwuwlpEjjCnDZN",
+    "3KH2Gs1noFVM6AELjq03vc",
+    "3KrepKtDyPoP8I1t7BpDSw",
+    "3OFhp1NroSIRhReQDHEG9z",
+    "3OxdXYsQec4nlrluOXFb09",
+    "3ST33QbyCHtNq6sGVEjgZO",
+    "3UDmHZcBTQp8Iu8droNtUl",
+    "3VW6HJYa5l0uzGcCRA222P",
+    "3XmHd0NqN5O4e7Vnv8fb8q",
+    "3YTgjGZ58t6K7o9NroTGCD",
+    "3Zm2gmffkeAwqLQxFOEsYo",
+    "3bMc9oRaUWnojCrYTUXXcQ",
+    "3cSFKd5QwPP0Of02tjSzDK",
+    "3eRE1KwnUma75nu1HhoNY4",
+    "3f5JtAsGRIXN8pSAeTi6vA",
+    "3gngGQld3ErvphXxsFiulR",
+    "3gtWoU0vj1dYhHH1Ng8Z92",
+    "3hNUYt4dMM9RhcWmty8oKF",
+    "3kaUhVC1e1zVFdPkyJNgrx",
+    "3lfjd8A0DkB84yrvjzkbry",
+    "3mLDq0hbHkafZoy4GvF7EG",
+    "3ndhPhaWdICplZVrC4NeCR",
+    "3nmd5lsusqNE1bhcpHwAOH",
+    "3pOIwaY33P8qCmWCcJ2CSy",
+    "3rZrK0m6FsVwNBS0SFpivX",
+    "3sJLoIc9y1b4gKAP8ZNsR9",
+    "3sXsbaZlsTv2iJiEntsgM5",
+    "3sqP75PDhbIta3VxaZa7Gw",
+    "3tFed7YsjGnIfxeLEQwx3R",
+    "3uyODN4WPyhs8TJRuMfhwF",
+    "3vSn1frPgFcRXrjWOfhMLl",
+    "3vzSGr8Anj3SLaMrp613Gm",
+    "3wlPIgXbSXh9U1JebpokAJ",
+    "3wn5Rw7VBqwP0vAQtjMhOS",
+    "3x6CEyquRREaQ9ZBbBhrGe",
+    "3y4J1NqqwJhxo0xhaBFMCN",
+    "42et6fnHCw1HIPSrdPprMl",
+    "42uCM9saw5B3bCjEFLROlE",
+    "436yrzQWA32vb1sTZKXg9r",
+    "45nwypnUNQs3AA77RjHPiw",
+    "46efwIlSpvdURIubZCs3jC",
+    "47oS7xB31QQUyPCgHpM3VZ",
+    "49ztutPq82dK8AYDO2OkN7",
+    "4BSR9I4ExlCJdXJo2GpBD5",
+    "4C6Uex2ILwJi9sZXRdmqXp",
+    "4E0teOQQQwagLVvQ7VfYm1",
+    "4F3AZKEJubvPsl0hBArVBW",
+    "4FVWfJa3MtyBDdQ9gPFWl2",
+    "4LqkSEGv7SpGzruiSTkfL5",
+    "4MdEYuoGhG2RTG3erOiu2H",
+    "4NfIGw7P58UPEDPn5KaZ4E",
+    "4Ngjl2bK9B4iQI98DBano0",
+    "4P5KoWXOxwuobLmHXLMobV",
+    "4PpuH4mxL0rD35mOWaLoKS",
+    "4UFPN3ZyAsPkFwx5DFg5yF",
+    "4ceQbaldGMXwkaio2O99ug",
+    "4isHeZRxdYw7IgGvl8OPwq",
+    "4jpYCWEXF3tYlWrIEyVnxm",
+    "4jyyma8YdFC4S4llusSFRu",
+    "4m1mqQuy34Nzh0480VR364",
+    "4nwKdZID1ht0lDBJ5h2p87",
+    "4oLXDa1WE78vQvNcRohIuX",
+    "4r0p0IhfK7TEHFP6v89Vwt",
+    "4rgwri7LajWVZvdj2N81SS",
+    "4tiKa5LHDcuWEIZzROACtG",
+    "4whkhyXTrTgHKZzkUvdwoq",
+    "4xdHI4eFNst0vTZuuKrWjr",
+    "4zzY7s6PKnMFIQ3ZNfHzGh",
+    "554JCidYYLyngoK4jPxpfV",
+    "558oD8tdaK2KmUBm7CgINa",
+    "56KPaXhRx8U6YB2stCJEgY",
+    "57cZFx3KlHmx0CNNYbWO8u",
+    "59ixjAY05WENR6TitS0EKh",
+    "5DuaMIvmPyT3oEvuccx6JO",
+    "5EsKjjNxjKeDjlxqdSs4X4",
+    "5FYaSV8TLF7qvonB1BDOw0",
+    "5H6Jp0syB5yEPk7SWYdlmk",
+    "5HCTbcF18u5DcYNwEWWf3n",
+    "5JG9zYkmhPnc6X8nyO3Bv1",
+    "5L4Oj3LmIzN2hW6aI81sE8",
+    "5LI7PoHEolR8plrf3I16sq",
+    "5PTG6rrL6EPFD9E2QMI2pl",
+    "5Stg0rHL1MdBvLpEz4bBA7",
+    "5Th1SPySWgYlkXXC6wLMwL",
+    "5UmjHuYRItemped2xd3Qx4",
+    "5WJU527RQNyMLuKecjsL8V",
+    "5Yy9sRRcNQakNfR74hj5Td",
+    "5dRHgznMSoyqJO7bXqnxTx",
+    "5emxp4RqsF6QoAWXW2Afrk",
+    "5g9lS8deSIxItFBmZRC4vN",
+    "5ghIJDpPoe3CfHMGu71E6T",
+    "5iTfd45UuJzCAfabvkLM2I",
+    "5k2X5nAN0efhoZ9OC3flGo",
+    "5lKBvDIR941yvwBloegnJP",
+    "5lw8Mgb4LyhriPIC86gV6e",
+    "5n8Aro6j1bEGIy7Tpo7FV7",
+    "5nVE45ithgyVocZp5XLAk6",
+    "5sC37XO1IYdnZcEdoJTKRZ",
+    "5sHeIGDbdzw8DeO57XZKIy",
+    "5sS8ndoNMQaPEYaTKL5uFa",
+    "5ubvP9oKmxLUVq506fgLhk",
+    "5waTXjl4V7YBw1Bo4CsjlM",
+    "5xEDRg4tI8ixoAvbrupsEg",
+    "608xszaAxVh4m7NcKJiAbF",
+    "61uFtDdDMle65347IIuF7r",
+    "62LMgHQvo7JmH1TYbnqJyj",
+    "63T7DJ1AFDD6Bn8VzG6JE8",
+    "64TJKMfx0QxpuR7rTXL05c",
+    "65ES1qwOB577ZnTkizMXJJ",
+    "66ZcOcouenzZEnzTJvoFmH",
+    "689jX0Jm6VUwsoZlgEjwFQ",
+    "69AHqDMcDKyxKL1lNNCIve",
+    "6BZFzi6roce3ZBQ6dq13f7",
+    "6CTnLPc0KLaumnvPBEztdO",
+    "6DH13QYXK7lKkYHSU88N48",
+    "6DXLO8LndZMVOHM0wNbpzg",
+    "6FI3RJ58Ztl0X1VtA6pVs9",
+    "6Gie6gMZwfiaGreQTyGkhC",
+    "6HubPIhCjRxkwR2zJa2ZLB",
+    "6IM45SqAURH6PrvziDs1RQ",
+    "6Iuh3vNjpWhSeHM3RZgzQL",
+    "6MBZyLisOWTChcevgFqwVr",
+    "6MOEQCtAWNSCmvg3SFKF5y",
+    "6OOmGlWhCr3bq4cYpnwPnj",
+    "6PXnHU4yquX8TQmQ4VXXeY",
+    "6QlSPjiXHc1XwGKeEls6Gh",
+    "6WZjjf4mKurHPC5BhdGwet",
+    "6daLiRlW5V69shUA571Vwy",
+    "6eL1ncVDtQHgSm3E288TS7",
+    "6fACn9e0wdMIWZa9CZJym8",
+    "6gHzcDHbcoGgvoGAtcTq94",
+    "6gjDPTEXEY7YIpIFBvDbj3",
+    "6ie0uyyvOKTTuIFBMPiNIl",
+    "6kl1qtQXQsFiIWRBK24Cfp",
+    "6pCgZDgO4bUJGvtTr0hU5V",
+    "6pbxPH9L6iXSYw4Xgq23RY",
+    "6qJjgYxhZ3gBTm4TI8t41e",
+    "6rgmHos0kapmml7VwqSrXS",
+    "6vV1NDCjh2afFgQ9Vb7i86",
+    "6xE6ZWzK1YDDSYzqOCoQlz",
+    "6xNkEcbvpPcdSOFKFXNpFL",
+    "6y0Etr2KJr0sdcEp7ajoUK",
+    "6zrsmzrMoxNkXEQLubCWtA",
+    "758mQT4zzlvBhy9PvNePwC",
+    "75FYqcxt1YEAtqDLrOeIJn",
+    "76cXvm18FAABxyhiU3m3WF",
+    "77ybhTvFC7kr5IeUqBP2qp",
+    "78lgmZwycJ3nzsdgmPPGNx",
+    "7ALEBJ8LOQqXVJ2tqnXtoH",
+    "7EAMXbLcL0qXmciM5SwMh2",
+    "7GApeoo08HHJ70980XyPZz",
+    "7K2qvU3tywyWUKlqwGFs1t",
+    "7LcmuGeSXQzQlteW3yGtWb",
+    "7ab0dshQmFwArA3EKBOcs5",
+    "7bd0BC9RNR6GxJsM3pRwBw",
+    "7bwLHhqhRu0fVTM3aaeK9V",
+    "7c5JxJWGMJqG0IYABA04WS",
+    "7cjoZVmWe2xsGR4wcXiV2v",
+    "7eEnuNVAHQXEwg18zZnmdL",
+    "7emVwhF4OMemAT65nbpuZO",
+    "7eqoqGkKwgOaWNNHx90uEZ",
+    "7iXF2W9vKmDoGAhlHdpyIa",
+    "7lOWMm3udPeBvu5FDmpC8h",
+    "7sd72KZS8D59g5NmhxyHpJ",
+    "7y9R6wNjSJlkeOTmMdSvDi"
+  ],
+  "spotify_synced_track_ids": [],
+  "spotify_auth": {},
+  "spotify_oauth_state": ""
 }
