@@ -2908,6 +2908,78 @@ def describe_changes(previous: QuerySpec, updated: QuerySpec) -> str:
     return "; ".join(changes)
 
 
+def _build_refinement_with_fallback(
+    base_merged_spec: "QuerySpec",
+    refinement_intent: "PromptIntent",
+    current_session: "DJSession",
+    prior_feedback: list,
+    excluded_ids: set,
+    excluded_sigs: set,
+) -> "tuple[DJSession | None, str | None, str]":
+    """Try increasingly relaxed versions of the merged spec until we get a non-empty pool.
+
+    Returns ``(rebuilt_session, taste_note, relaxation_note)`` where
+    *relaxation_note* describes what was relaxed (empty string if strict pass worked).
+    """
+    playlist_length = current_session.playlist_length
+
+    # Build a widened intent for fallback stages
+    wider_intent = PromptIntent(**vars(refinement_intent))
+    wider_intent.exploration_weight = min(0.96, float(refinement_intent.exploration_weight) + 0.12)
+    wider_intent.novelty_target = min(0.96, float(refinement_intent.novelty_target) + 0.12)
+    wider_intent.direct_match_weight = max(0.22, float(refinement_intent.direct_match_weight) - 0.08)
+
+    fallback_chain: list[tuple["QuerySpec", "PromptIntent", str]] = [
+        # Stage 1 — strict as requested
+        (base_merged_spec, refinement_intent, ""),
+    ]
+
+    # Stage 2 — widen exploration/novelty while keeping all filters
+    fallback_chain.append((clone_spec(base_merged_spec), wider_intent, ""))
+
+    # Stage 3 — only the first genre (drop secondary genre constraints)
+    if base_merged_spec.genres and len(base_merged_spec.genres) > 1:
+        relaxed_genres = clone_spec(base_merged_spec)
+        relaxed_genres.genres = list(base_merged_spec.genres[:1])
+        relaxed_genres.spotify_search_queries = relaxed_genres.to_spotify_search_queries()
+        fallback_chain.append((relaxed_genres, wider_intent, ""))
+
+    # Stage 4 — keep genres but drop audio-feature constraints so Spotify
+    #           returns a broader candidate pool
+    if base_merged_spec.constraints:
+        no_constraints = clone_spec(base_merged_spec)
+        no_constraints.constraints = {}
+        no_constraints.spotify_search_queries = no_constraints.to_spotify_search_queries()
+        fallback_chain.append(
+            (no_constraints, wider_intent, "I loosened the audio-feature filters to open up the pool.")
+        )
+
+    # Stage 5 — broad: keep seed artists/tracks but drop all genre + constraint
+    #           filters so we always find *something*
+    broad_spec = clone_spec(base_merged_spec)
+    broad_spec.genres = []
+    broad_spec.constraints = {}
+    broad_spec.spotify_search_queries = broad_spec.to_spotify_search_queries()
+    fallback_chain.append(
+        (broad_spec, wider_intent, "I dropped the genre filter too so I could find enough tracks.")
+    )
+
+    for candidate_spec, candidate_intent, relax_note in fallback_chain:
+        session, taste_note = build_session_from_spec(
+            candidate_spec,
+            playlist_length,
+            prompt_intent=candidate_intent,
+            prior_feedback=prior_feedback,
+            excluded_track_ids=excluded_ids,
+            excluded_track_signatures=excluded_sigs,
+        )
+        count = getattr(session, "initial_candidate_count", session.pool.n_available)
+        if count > 0:
+            return session, taste_note, relax_note
+
+    return None, None, ""
+
+
 def apply_refinement(message: str) -> None:
     current_session = st.session_state["dj_session"]
     previous_spec = clone_spec(current_session.spec)
@@ -2922,23 +2994,28 @@ def apply_refinement(message: str) -> None:
     merged_spec = merge_specs(previous_spec, refinement, message)
     refinement_intent = parse_prompt_intent(message, merged_spec, build_prompt_context())
     prior_feedback = session_feedback_history(current_session)
-    rebuilt_session, taste_note = build_session_from_spec(
-        merged_spec,
-        current_session.playlist_length,
-        prompt_intent=refinement_intent,
-        prior_feedback=prior_feedback,
-        excluded_track_ids=set(st.session_state.get("seen_track_ids", set())),
-        excluded_track_signatures=set(st.session_state.get("seen_track_signatures", set())),
-    )
-    merged_spec = rebuilt_session.spec  # use blended spec
+    excluded_ids = set(st.session_state.get("seen_track_ids", set()))
+    excluded_sigs = set(st.session_state.get("seen_track_signatures", set()))
 
-    if getattr(rebuilt_session, "initial_candidate_count", rebuilt_session.pool.n_available) == 0:
+    rebuilt_session, taste_note, relax_note = _build_refinement_with_fallback(
+        merged_spec,
+        refinement_intent,
+        current_session,
+        prior_feedback,
+        excluded_ids,
+        excluded_sigs,
+    )
+
+    if rebuilt_session is None:
+        # Absolute last resort: keep the previous session but acknowledge the request
         add_chat_message("user", message)
         add_chat_message(
             "assistant",
-            "That refinement collapsed the candidate pool to zero, so I kept the previous priors and posterior intact. Try a broader follow-up.",
+            "I'm having trouble pulling enough tracks for that exact request right now — I'll keep the current set going and steer toward that vibe gradually. Try nudging me again or give me a broader direction.",
         )
         return
+
+    merged_spec = rebuilt_session.spec  # use blended spec
 
     st.session_state["dj_session"] = rebuilt_session
     st.session_state["session_finished"] = rebuilt_session._current_song is None
@@ -2953,8 +3030,10 @@ def apply_refinement(message: str) -> None:
     if not change_summary:
         change_summary = "I kept the structure mostly intact and treated your note as a softer steering signal."
     st.session_state["latest_model_update"] = change_summary
+    relax_section = f"**Note:** {relax_note}" if relax_note else None
     assistant_reply = compose_assistant_message(
         f"**I'm reshaping the set:** {change_summary}",
+        relax_section,
         humanize_spotify_note(spotify_note),
         humanize_taste_note(taste_note),
         f"**I'm keeping your earlier reactions in the mix too:** {len(prior_feedback)} prior decisions are still informing this.",
@@ -2965,12 +3044,109 @@ def apply_refinement(message: str) -> None:
 
 
 GENRE_TRANSITIONS = {
-    "indie": ["indie pop", "alternative", "folk"],
-    "hip hop": ["r&b", "neo soul", "house"],
-    "trance": ["melodic techno", "progressive house", "dance"],
-    "house": ["disco", "dance", "soul"],
-    "jazz": ["neo soul", "soul", "funk"],
-    "rock": ["indie", "new wave", "alternative"],
+    # Pop and adjacent
+    "pop": ["funk", "soul", "r&b", "dance pop", "disco"],
+    "dance pop": ["disco", "funk", "house", "pop"],
+    "synth pop": ["new wave", "electro pop", "indie pop", "dance pop"],
+    "electro pop": ["synth pop", "dance pop", "house", "new wave"],
+    "indie pop": ["indie", "alternative", "folk", "dream pop"],
+    "dream pop": ["shoegaze", "indie pop", "alternative", "ambient"],
+    # Soul, funk, R&B
+    "soul": ["funk", "r&b", "neo soul", "jazz", "gospel"],
+    "funk": ["disco", "soul", "r&b", "boogie", "dance pop"],
+    "r&b": ["soul", "funk", "neo soul", "hip hop", "jazz"],
+    "neo soul": ["soul", "r&b", "jazz", "hip hop", "funk"],
+    "boogie": ["funk", "disco", "soul", "dance pop"],
+    # Disco and dance
+    "disco": ["funk", "house", "boogie", "soul", "dance pop"],
+    "house": ["disco", "dance", "soul", "techno", "deep house"],
+    "deep house": ["house", "disco", "soul", "afrobeats"],
+    "dance": ["house", "disco", "funk", "dance pop"],
+    # Hip hop and related
+    "hip hop": ["r&b", "neo soul", "house", "trap", "funk"],
+    "trap": ["hip hop", "r&b", "pop rap", "cloud rap"],
+    "pop rap": ["hip hop", "trap", "dance pop", "r&b"],
+    # Rock and adjacent
+    "rock": ["indie", "new wave", "alternative", "classic rock"],
+    "classic rock": ["blues rock", "hard rock", "southern rock", "rock"],
+    "indie": ["indie pop", "alternative", "folk", "dream pop"],
+    "alternative": ["indie", "rock", "grunge", "post punk"],
+    "new wave": ["synth pop", "post punk", "electro pop", "indie"],
+    "post punk": ["new wave", "alternative", "gothic rock", "indie"],
+    # Jazz and adjacent
+    "jazz": ["neo soul", "soul", "funk", "bossa nova", "blues"],
+    "blues": ["soul", "r&b", "funk", "classic rock", "jazz"],
+    "blues rock": ["classic rock", "rock", "blues", "southern rock"],
+    "bossa nova": ["jazz", "latin", "soul", "afrobeats"],
+    # Electronic
+    "trance": ["melodic techno", "progressive house", "dance", "house"],
+    "techno": ["house", "trance", "minimal techno", "industrial"],
+    "ambient": ["dream pop", "shoegaze", "focus", "new age"],
+    "lofi": ["hip hop", "jazz", "neo soul", "ambient"],
+    # World and folk
+    "afrobeats": ["afropop", "dancehall", "funk", "r&b", "deep house"],
+    "afropop": ["afrobeats", "pop", "soul", "funk"],
+    "latin": ["bossa nova", "salsa", "reggaeton", "pop"],
+    "reggaeton": ["latin", "trap", "dance pop", "r&b"],
+    "folk": ["indie", "alternative", "country", "singer songwriter"],
+    "country": ["folk", "country pop", "americana", "southern rock"],
+    "americana": ["folk", "country", "blues", "rock"],
+    # Misc
+    "gospel": ["soul", "r&b", "funk", "neo soul"],
+    "shoegaze": ["dream pop", "alternative", "indie", "post punk"],
+    "metal": ["hard rock", "alternative", "rock", "classic rock"],
+    "hard rock": ["metal", "classic rock", "rock", "blues rock"],
+}
+
+# Maps well-known artist names (lowercased) to their inferred genre and
+# a chain of musically adjacent pivot genres.  Used when a session is
+# seeded by artist name but has no explicit genres set in the spec.
+ARTIST_PIVOT_GENRES: dict[str, list[str]] = {
+    # Pop/soul crossovers
+    "michael jackson": ["funk", "disco", "soul", "r&b", "boogie"],
+    "prince": ["funk", "r&b", "soul", "disco", "dance pop"],
+    "janet jackson": ["funk", "r&b", "dance pop", "soul", "disco"],
+    "stevie wonder": ["soul", "funk", "r&b", "neo soul", "jazz"],
+    "whitney houston": ["r&b", "soul", "dance pop", "gospel"],
+    "mariah carey": ["r&b", "soul", "pop", "gospel"],
+    "beyonce": ["r&b", "pop", "soul", "dance pop", "funk"],
+    "tina turner": ["soul", "rock", "r&b", "funk"],
+    # Funk & disco
+    "earth wind fire": ["soul", "funk", "r&b", "disco", "gospel"],
+    "earth, wind & fire": ["soul", "funk", "r&b", "disco", "gospel"],
+    "parliament": ["funk", "soul", "r&b", "disco"],
+    "funkadelic": ["funk", "soul", "rock", "r&b"],
+    "james brown": ["funk", "soul", "r&b", "gospel"],
+    "sly and the family stone": ["funk", "soul", "rock", "r&b"],
+    "chic": ["disco", "funk", "soul", "dance pop"],
+    "kool and the gang": ["funk", "soul", "r&b", "disco"],
+    "the gap band": ["funk", "soul", "r&b", "dance pop"],
+    # R&B/neo-soul
+    "d'angelo": ["neo soul", "soul", "funk", "r&b"],
+    "erykah badu": ["neo soul", "soul", "jazz", "r&b"],
+    "lauryn hill": ["neo soul", "r&b", "hip hop", "soul"],
+    "john legend": ["r&b", "soul", "pop", "neo soul"],
+    "usher": ["r&b", "dance pop", "pop", "soul"],
+    # Hip hop
+    "kendrick lamar": ["hip hop", "r&b", "neo soul", "jazz"],
+    "drake": ["hip hop", "r&b", "trap", "pop rap"],
+    "j. cole": ["hip hop", "r&b", "neo soul", "jazz"],
+    "frank ocean": ["r&b", "neo soul", "indie pop", "soul"],
+    # Classic rock / oldies
+    "the beatles": ["rock", "folk", "classic rock", "pop"],
+    "led zeppelin": ["classic rock", "blues rock", "hard rock", "folk"],
+    "rolling stones": ["classic rock", "blues rock", "rock", "soul"],
+    "david bowie": ["rock", "new wave", "synth pop", "glam rock"],
+    "fleetwood mac": ["classic rock", "folk", "soft rock", "indie"],
+    # Electronic / dance
+    "daft punk": ["house", "disco", "electro", "funk"],
+    "the weeknd": ["r&b", "synth pop", "pop", "neo soul"],
+    "post malone": ["pop rap", "hip hop", "trap", "rock"],
+    # Pop
+    "taylor swift": ["indie pop", "pop", "country pop", "folk"],
+    "billie eilish": ["indie pop", "alternative", "electro pop", "dream pop"],
+    "bruno mars": ["funk", "soul", "pop", "r&b", "disco"],
+    "the 1975": ["indie pop", "synth pop", "alternative", "new wave"],
 }
 
 INTERVENTION_CONSTRAINTS: dict[str, dict[str, tuple[float, float]]] = {
@@ -3015,23 +3191,42 @@ INTERVENTION_CONSTRAINTS: dict[str, dict[str, tuple[float, float]]] = {
 
 
 def next_transition_genre(spec: QuerySpec) -> str | None:
-    current = spec.genres[0] if spec.genres else None
-    if current:
-        options = GENRE_TRANSITIONS.get(current.lower(), [])
+    current_genres = {g.lower() for g in spec.genres}
+
+    # 1. Try genre-based transitions using expanded GENRE_TRANSITIONS table
+    for current_genre in spec.genres:
+        options = GENRE_TRANSITIONS.get(current_genre.lower(), [])
         for candidate in options:
-            if candidate not in spec.genres:
+            if candidate.lower() not in current_genres:
                 return candidate
 
+    # 2. Try artist-based pivot: look up seed_artists in ARTIST_PIVOT_GENRES
+    for artist in getattr(spec, "seed_artists", []):
+        artist_key = artist.lower().strip()
+        # Try exact match first, then partial
+        artist_pivots = ARTIST_PIVOT_GENRES.get(artist_key)
+        if not artist_pivots:
+            for key, pivots in ARTIST_PIVOT_GENRES.items():
+                if key in artist_key or artist_key in key:
+                    artist_pivots = pivots
+                    break
+        if artist_pivots:
+            for candidate in artist_pivots:
+                if candidate.lower() not in current_genres:
+                    return candidate
+
+    # 3. Fall back to user's taste profile genre affinities
     preferred = top_affinity_items(current_taste_profile().get("genre_affinity", {}), limit=4)
     for candidate in preferred:
-        if candidate not in spec.genres:
+        if candidate.lower() not in current_genres:
             return candidate
 
-    fallback = ["neo soul", "indie pop", "house", "jazz", "folk"]
+    # 4. Generic fallback list
+    fallback = ["neo soul", "funk", "indie pop", "house", "jazz", "soul", "folk"]
     for candidate in fallback:
-        if candidate not in spec.genres:
+        if candidate.lower() not in current_genres:
             return candidate
-    return current
+    return spec.genres[0] if spec.genres else None
 
 
 def choose_shift_genre(spec: QuerySpec, candidates: list[str] | None = None) -> str | None:
@@ -3086,6 +3281,32 @@ def intervention_profile_summary() -> dict[str, list[str]]:
     }
 
 
+def _pivot_transition_speech(spec: "QuerySpec", pivot_genre: str) -> str:
+    """Generate a contextual DJ narration line for a genre pivot.
+
+    Describes the *from* context (seed artists or current genre) and the *to*
+    destination so the transition feels intentional, not random.
+    """
+    # Describe what we're moving away from
+    from_parts: list[str] = []
+    if getattr(spec, "seed_artists", []):
+        artist_names = ", ".join(spec.seed_artists[:2])
+        from_parts.append(artist_names)
+    if spec.genres:
+        from_parts.append(spec.genres[0])
+
+    if from_parts:
+        from_label = " / ".join(from_parts)
+        return (
+            f"Alright, we've been deep in the {from_label} lane — now I'm shifting the energy "
+            f"and taking you into some {pivot_genre} territory. Same thread, new groove."
+        )
+    return (
+        f"DJ Bayes pivot. I'm steering this set into a {pivot_genre} lane for the next stretch "
+        f"while keeping what I've learned about your taste intact."
+    )
+
+
 def build_intervention_routes(spec: QuerySpec, rounds: int) -> list[dict[str, Any]]:
     summary = intervention_profile_summary()
     top_artists = summary["artists"]
@@ -3114,11 +3335,13 @@ def build_intervention_routes(spec: QuerySpec, rounds: int) -> list[dict[str, An
 
     pivot_genre = next_transition_genre(spec)
     if pivot_genre:
+        pivot_speech = _pivot_transition_speech(spec, pivot_genre)
+        from_label = (spec.seed_artists[0] if getattr(spec, "seed_artists", []) else None) or (spec.genres[0] if spec.genres else "the current sound")
         add_route(
             "genre_pivot",
-            f"I'm flipping the room toward **{pivot_genre}**.",
+            f"Moving from **{from_label}** into **{pivot_genre}** territory.",
             "You have enough posterior signal here, so this is a controlled genre pivot rather than a reset.",
-            f"Quick DJ Bayes pivot. I'm taking you into a {pivot_genre} lane for the next stretch while keeping what I've learned about your taste intact.",
+            pivot_speech,
             lambda base: _route_with_genre_pivot(base, pivot_genre),
         )
 
@@ -3281,7 +3504,7 @@ def ensure_dj_greeting() -> None:
     greeting = compose_assistant_message(
         "**Hey, I'm DJ Bayes.** Good to have you here.",
         "**Throw me a vibe, an artist, or a moment:** I'll turn it into a live set that feels personal, playful, and easy to steer.",
-        "**House rule:** every three songs, I'll jump in with a fresh little detour to keep the room moving.",
+        "**House rule:** every five songs or so, I'll steer the set into a new but related direction — keeping things fresh without losing the thread.",
     )
     add_chat_message("assistant", greeting)
     schedule_speech(
@@ -3295,7 +3518,7 @@ def ensure_dj_greeting() -> None:
 def maybe_trigger_dj_interlude() -> bool:
     session = st.session_state["dj_session"]
     completed_songs = int(st.session_state.get("completed_song_count", 0))
-    if completed_songs == 0 or completed_songs % 3 != 0:
+    if completed_songs == 0 or completed_songs % 5 != 0:
         return False
     if st.session_state.get("last_transition_round") == completed_songs:
         return False
@@ -3339,7 +3562,7 @@ def maybe_trigger_dj_interlude() -> bool:
     transition_count = completed_songs
     if chosen_route is not None and rebuilt is not None and rebuilt._current_song is not None:
         message = compose_assistant_message(
-            f"**DJ Bayes intervention:** {chosen_route['headline']}",
+            f"**DJ Bayes — set pivot after {transition_count} songs:** {chosen_route['headline']}",
             f"**Why this route:** {chosen_route['reason']}",
             f"**Next up:** {rebuilt._current_song.track_name} by {rebuilt._current_song.artists}",
         )
@@ -3348,13 +3571,14 @@ def maybe_trigger_dj_interlude() -> bool:
     else:
         ensure_current_song(session)
         fallback_genre = next_transition_genre(session.spec) or "a new lane"
+        fallback_speech = _pivot_transition_speech(session.spec, fallback_genre)
         message = compose_assistant_message(
-            f"**DJ Bayes intervention:** I'm nudging the set toward **{fallback_genre}**.",
+            f"**DJ Bayes — set pivot after {transition_count} songs:** I'm nudging the set toward **{fallback_genre}**.",
             "**Why this route:** I couldn't find a stronger alternate detour with enough songs, so I kept the pivot simple.",
             f"**Next up:** {session._current_song.track_name} by {session._current_song.artists}" if session._current_song is not None else None,
         )
         latest_update = f"Auto-intervention after {transition_count} songs toward {fallback_genre}."
-        speech_text = f"DJ Bayes here. You've moved through {transition_count} songs, so I'm nudging this set toward {fallback_genre} for the next stretch."
+        speech_text = fallback_speech
     add_chat_message("assistant", message)
     st.session_state["latest_model_update"] = latest_update
     schedule_speech(speech_text, f"transition-{transition_count}")
